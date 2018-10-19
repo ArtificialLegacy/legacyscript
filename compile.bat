@@ -1,2 +1,2 @@
-node --experimental-modules .
+node --experimental-modules ./main/compiler.js
 pause
