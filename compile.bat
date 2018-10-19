@@ -1,0 +1,2 @@
+node --experimental-modules .
+pause
