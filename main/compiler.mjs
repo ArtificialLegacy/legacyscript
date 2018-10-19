@@ -24,9 +24,9 @@ for(let i = 0; i < file.length; i++) {
     console.log("Error detected. Code compiler stopped.");
     break;
   }
-  for(r = 0; r < 100; r++){
+  for(let r = 0; r < 100; r++){
     check = check + fileStrings[r];
-    for(c in syntax){
+    for(let c in syntax){
       if(check == c){
         loadTok(c, fileStrings, r);
         break;
@@ -40,7 +40,7 @@ function loadTok(tempC, tempFile, tempR){
     case "int":
       tok = tok + "{int";
       let tempVar = "";
-      for(l=4; l<tempFile.lenth; l++){
+      for(let l=4; l<tempFile.lenth; l++){
         tempVar = tempVar + tempFile[l];
         if(tempFile[l] == " "){
           if(tempFile[l+1] !== ":"){
@@ -48,7 +48,7 @@ function loadTok(tempC, tempFile, tempR){
             break;
           }
           tok = tok + `[${tempVar}]`;
-          for(z=l+3; z<tempFile.lenth; z++){
+          for(let z=l+3; z<tempFile.lenth; z++){
             if(tempFile[z] == " "){
               if(tempFile[z+1] !== ":"){
                 errCheck = true;
