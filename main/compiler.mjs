@@ -35,7 +35,7 @@ for(i = 0; i < file.length; i++) {
 
 function loadTok(tempC, tempFile, tempR){
   switch(tempC){
-    case: "int":
+    case "int":
       tok = tok + "{int";
       tempVar = "";
       for(l=4; l<tempFile.lenth; l++){
@@ -62,13 +62,13 @@ function loadTok(tempC, tempFile, tempR){
       }
       tok = tok + "}";
       break;
-    case: "method":
+    case "method":
       break;
-    case: "print.console":
+    case "print.console":
       break;
-    case: "print.alert":
+    case "print.alert":
       break;
-    case: "print.prompt":
+    case "print.prompt":
       break;
     default: 
       break;
