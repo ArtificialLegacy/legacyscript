@@ -4,7 +4,7 @@ const fs = settings.fs;
 
 import syntax from './index/methods.mjs';
 
-var file = fs.readFileSync(`../project/script.ls`).toString().split("\n");
+var file = fs.readFileSync(`./project/script.ls`).toString().split("\n");
 
 var tok = "";
 /*
