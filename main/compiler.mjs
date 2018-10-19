@@ -1,4 +1,6 @@
-const fs = require("fs");
+import settings from '../config.js';
+
+const fs = settings.fs;
 
 import syntax from './index/methods.mjs';
 
