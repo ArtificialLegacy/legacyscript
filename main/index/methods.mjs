@@ -6,4 +6,4 @@ const syntax = {
   "print.prompt": true,
 };
 
-module.exports = syntax;
+export default syntax;
