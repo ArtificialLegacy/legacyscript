@@ -15,7 +15,7 @@ for(i in file) {
 
 let errCheck = false;
 
-for(i = 0; i < file.length; i++) {
+for(let i = 0; i < file.length; i++) {
   fileStrings = file[i];
   check = "";
   if(errCheck == true) {
