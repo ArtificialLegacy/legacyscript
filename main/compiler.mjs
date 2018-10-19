@@ -77,6 +77,6 @@ function loadTok(tempC, tempFile, tempR){
   }
 }
 
-fs.writeFileSync("../project/toks.tok", tok, (err) => {
+fs.writeFileSync("./project/toks.tok", tok, (err) => {
   if(err) throw(err);
 });
