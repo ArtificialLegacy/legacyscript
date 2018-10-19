@@ -19,7 +19,7 @@ let fileStrings = "";
 
 for(let i = 0; i < file.length; i++) {
   fileStrings = file[i];
-  check = "";
+  let check = "";
   if(errCheck == true) {
     console.log("Error detected. Code compiler stopped.");
     break;
@@ -39,7 +39,7 @@ function loadTok(tempC, tempFile, tempR){
   switch(tempC){
     case "int":
       tok = tok + "{int";
-      tempVar = "";
+      let tempVar = "";
       for(l=4; l<tempFile.lenth; l++){
         tempVar = tempVar + tempFile[l];
         if(tempFile[l] == " "){
