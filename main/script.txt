@@ -41,6 +41,12 @@ if (VARIABLE1 : LOGICAL-STATEMENT : VARIABLE2) {
 --
 
 =
++=
+-=
+*=
+/=
+
+==
 !=
 
 undefined
