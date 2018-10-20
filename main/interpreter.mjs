@@ -14,6 +14,13 @@ import syntax from './index/methods.mjs';
 
 var ln = 0;
 
+var scope = [
+  "global",
+];
+var scopeP = 0;
+
+var open = 0;
+
 for(let i = 0; i < file.length; i++) {
   ln = i;
   fileStrings = file[i];
@@ -38,62 +45,32 @@ function interpret(tempFile, tempR, tempC){
   compile[0] = compile[0].substring(1);
   switch(tempC){
     case "init":
+      createVar(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "method":
+      open++;
+      createMethod(compile[1], compile[2], compile[3]);
+      scopeP++;
+      scope[scopeP] = (compile[1]);
       break;
     case "run":
+      createRun(compile[1], compile[2], compile[3], "run", scope[scopeP]);
       break;
     case "math":
       break;
-    case "print.cons":
-      break;
-    case "print.count":
-      break;
-    case "print.stime":
-      break;
-    case "print.etime":
-      break;
-    case "print.clear":
-      break;
-    case "print.warn":
-      break;
-    case "print.info":
-      break;
-    case "print.error":
-      break;
-    case "edit.round":
-      break;
-    case "edit.floor":
-      break;
-    case "edit.ceil":
-      break;
-    case "edit.flip":
-      break;
-    case "edit.abs":
-      break;
-    case "edit.del":
-      break;
-    case "construct.list":
-      break;
-    case "construct.map":
-      break;
-    case "index.list":
-      break;
-    case "index.map":
-      break;
-    case "set.random":
-      break;
-    case "set.min":
-      break;
-    case "set.max":
-      break;
-    case "set.sqr":
-      break;
     case "if":
+      open++;
       break;
     case "end":
+      open--;
+      if(open < 0){
+        error("Syntax error. Unexpected end statement.", ln, 1);
+      }
+      delete scope[scopeP];
+      scopeP--;
       break
     default:
+      error("Syntax error. Unknown statement.", ln, 1);
       break;
   }
 }
@@ -106,7 +83,7 @@ let globalScope = {
     
   },
   "runs": {
-  
+    
   },
 };
 
@@ -129,33 +106,117 @@ class Var {
 
 function createVar(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
+    if(globalScope.variables[tempName]){
+      error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+    }
      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
   } else if(tempTag == "l"){
-    localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "normal");
+    if(tempScope !== "global"){
+      if(localScope[tempScope].variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "normal");
+    } else {
+      if(globalScope.variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
+    }
   } else if(tempTag == "c"){
-    localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "constant");
+    if(tempScope !== "global"){
+      if(localScope[tempScope].variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "constant");
+    } else {
+      if(globalScope.variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
+    }
   } else if(tempTag == "p"){
+    if(globalScope.variables[tempName]){
+      error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+    }
     globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
   } else {
-    error(`Syntax error. Invalid or missing tag. Got '${tempTag}'`,  ln+1, 6);
+    error(`Syntax error. Invalid or missing tag. Got '${tempTag}'`,  ln, 6);
   }
 }
 
 class Method {
-  constructor(tempName, tempParams, tempTag="d"){
+  constructor(tempName, tempState, tempTag="d"){
     this.name = tempName;
-    this.params = tempParams;
+    this.state = tempState;
     this.tag = tempTag;
   }
 }
 
-function createMethod(tempName, tempParams, tempTag){
+createMethod("print.cons", s, "i");
+createMethod("print.clear", s, "i");
+createMethod("print.info", s, "i");
+createMethod("print.warn", s, "i");
+createMethod("print.count", s, "i");
+createMethod("print.stime", s, "i");
+createMethod("print.etime", s, "i");
+createMethod("edit.round", s, "i");
+createMethod("edit.floor", s, "i");
+createMethod("edit.ceil", s, "i");
+createMethod("edit.flip", s, "i");
+createMethod("edit.abs", s, "i");
+createMethod("edit.del", s, "i");
+createMethod("construct.list", s, "i");
+createMethod("construct.map", s, "i");
+createMethod("index.list", s, "i");
+createMethod("index.map", s, "i");
+createMethod("set.random", s, "i");
+createMethod("set.min", s, "i");
+createMethod("set.max", s, "i");
+createMethod("set.sqr", s, "i");
+
+function createMethod(tempName, tempState, tempTag){
+  if(globalScope.methods[tempName] || tempName == "math"){
+    error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+  }
+  globalScope.methods[tempName] = new Method(tempName, tempState, tempTag);
+}
+
+class Run {
+  constructor(tempName, tempParams, tempTag, tempType){
+    this.name = tempName;
+    this.params = tempParams;
+    this.tag = tempTag;
+    this.type = tempType;
+  }
+}
+
+function createRun(tempName, tempParams, tempTag, tempType, tempScope){
   let params = tempParams.split("(");
   params[1] = params[1].split(")");
   params = params[1][0].split(",");
-  globalScope.methods[tempName] = new Method(tempName, params, tempTag);
+  if(tempScope == "global"){
+    globalScope.runs[tempName].push(new Run(tempName, params, tempTag, tempType));
+  } else {
+    localScope[tempScope].runs[tempName].push(new Run(tempName, params, tempTag, tempType));
+  }
+}
+
+class Ex {
+  constructor(tempSet, tempOp, tempSetter){
+    this.set = tempSet;
+    this.op = tempOp;
+    this.setter = tempSetter;
+  }
+}
+
+function createMath(tempSet, tempOp, tempSetting, tempScope){
+  if(tempScope == global){
+    globalScope.runs.math.push(new Ex(tempSet, tempOp, tempSetting));
+  } else {
+    localScope[tempScope].runs.math.push(new Ex(tempSet, tempOp, tempSetting));
+  }
 }
 
 function error(tempError, tempLn, tempCol){
-  throw(`Error detected! ${tempError} at Ln.${tempLn} Col.${tempCol}`);
+  throw(`Error detected! ${tempError} at Ln.${tempLn+1} Col.${tempCol}`);
 }
