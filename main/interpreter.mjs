@@ -80,7 +80,9 @@ let globalScope = {
     
   },
   "runs": {
-    
+    "math": {
+      
+    },
   },
   "ifs": {
     
