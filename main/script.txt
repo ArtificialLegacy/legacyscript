@@ -1,36 +1,58 @@
-init VARIABLE_NAME : VARIABLE_DEFINITION : TAG
+init VARIABLE_NAME : VARIABLE_DEFINITION : TAG ;
 TAG = g (global), l (local), c (constant)
 
-method METHOD_NAME (PARAMETERS) {
+method METHOD_NAME : (PARAMETERS) : TAG ;
 
-}
+end
 
-METHOD_NAME(PARAMETERS)
+METHOD_NAME (PARAMETERS) : STATE : TAG ;
+STATE = r (run) 
+TAG = d (default)
 
-print.TAG(PARAMETERS)
+math VARIABLE_NAME : OPERATOR : (PARAMETERS) ;
+PARAMETERS = [0+]* (VARIABLE_NAME)
+
+print.TAG (PARAMETERS) : STATE : TAG ;
 TAG = cons, clear, info, warn, error, count, stime, etime
 PARAMETERS = [0] (EXPRESSION)
+STATE = r (run)
+TAG = d (default)
 
-edit.TAG(PARAMETERS)
+edit.TAG (PARAMETERS) : STATE : TAG ;
 TAG = round, floor, ceil, flip, abs, del
 PARAMETERS = [0] (EXPRESSION)
+STATE = r (run)
+TAG = d (default)
 
-construct.TAG(PARAMETERS)
+construct.TAG (PARAMETERS) : STATE : TAG ;
 TAG = list, map
 PARAMETERS = [0] (RETURN)
+STATE = r (run)
+TAG = d (default)
 
-index.TAG(PARAMETERS)
+index.TAG (PARAMETERS) : STATE : TAG ;
 TAG = list, map
 PARAMETERS = [0] (KEY) [1]* (VALUE)
+STATE = r (run)
+TAG = d (default)
 
-set.TAG(PARAMETERS)
+set.TAG (PARAMETERS) : STATE : TAG ;
 TAG = random, min, max, sqr
 PARAMETERS = [0] (EXPRESSION) [0+]* (INTEGERS)
+STATE = r (run)
+TAG = d (default)
 
-if (VARIABLE1 : LOGICAL-STATEMENT : VARIABLE2) {
+if (PARAMETERS) : STATE : TAG ;
+PARAMETERS = [0] (VARIABLE_NAME) [1] (OPERATOR) [2] (VARIABLE_NAME)
+STATE = r (run)
+TAG = d (default)
 
-}
+end (PARAMETERS) : STATE : TAG ;
+PARAMETERS = [0] (INTEGER)
+STATE = r (run)
+TAG = d (default)
 
+MATH:
 +
 -
 *
@@ -40,15 +62,21 @@ if (VARIABLE1 : LOGICAL-STATEMENT : VARIABLE2) {
 ++
 --
 
+SETS:
 =
 +=
 -=
 *=
 /=
 
+OPERATORS:
 ==
 !=
+||
+&&
+$$
 
+CONSTANTS:
 undefined
 null
 true
