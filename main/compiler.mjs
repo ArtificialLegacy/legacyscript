@@ -60,7 +60,7 @@ function loadTok(tempC, tempFile, tempR){
                 errCheck = true;
                 break;
               }
-              tok = tok + `[${tempVar}]`;
+              tok = tok + `[${tempVal}]`;
               if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
                 errCheck = true;
               }
