@@ -3,8 +3,6 @@ TAG = g (global), l (local), c (constant)
 
 method METHOD_NAME : (PARAMETERS) : TAG ;
 
-end
-
 METHOD_NAME (PARAMETERS) : STATE : TAG ;
 STATE = r (run) 
 TAG = d (default)
