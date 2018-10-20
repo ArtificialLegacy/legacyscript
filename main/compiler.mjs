@@ -64,7 +64,7 @@ function loadTok(tempC, tempFile, tempR){
           }
         }
       }
-      tok = tok + "}";
+      tok = tok + "}\n";
       break;
     case "method":
       break;
