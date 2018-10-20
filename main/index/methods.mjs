@@ -1,7 +1,7 @@
 const syntax = {
   "int": true,
   "method": true,
-  "print.console": true,
+  "print.cons": true,
   "print.count": true,
   "print.stime": true,
   "print.etime": true,
