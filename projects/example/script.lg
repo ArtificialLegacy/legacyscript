@@ -19,7 +19,7 @@ set.random (exampleVar2) : r : d ;
 math exampleVar2 : * : (exampleVar2) ;
 print.cons (exampleVar2) : r : d ;
 
-exampleMethod (exampleVar) : r: d ;
+run exampleMethod : (exampleVar) : d ;
 
 ~~ This is a comment :D ~~
 
