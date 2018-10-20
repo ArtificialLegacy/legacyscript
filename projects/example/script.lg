@@ -1,23 +1,23 @@
 init exampleVar : "example" : g ;
 
-construct.list (exampleVar2) : r : d ;
-index.list (exampleVar2, 0, "test") : r : d ;
-print.cons (index.list(exampleVar2, 0)) : r : d ;
+run construct.list : (exampleVar2) : d ;
+run index.list : (exampleVar2, 0, "test") : d ;
+run print.cons : (index.list(exampleVar2, 0)) : d ;
 
-edit.del (exampleVar2) :r : d ;
-print.cons (exampleVar2) : r : d ;
+run edit.del : (exampleVar2) : d ;
+run print.cons : (exampleVar2) : r : d ;
 
-method exampleMethod : (temp1) : r ;
+method exampleMethod : s : d ;
   init exampleVar2 : "local var" : l ;
-  print.cons (temp1) : r : d ;
-  print.info (exampleVar2) : r : d ;
+  run print.cons : (temp1) : d ;
+  run print.info : (exampleVar2) : d ;
 end (1) : r : d ;
 
-print.info (exampleVar2) : r : d ;
+run print.info : (exampleVar2) : d ;
 
-set.random (exampleVar2) : r : d ;
+run set.random : (exampleVar2) : d ;
 math exampleVar2 : * : (exampleVar2) ;
-print.cons (exampleVar2) : r : d ;
+run print.cons : (exampleVar2) : d ;
 
 run exampleMethod : (exampleVar) : d ;
 
