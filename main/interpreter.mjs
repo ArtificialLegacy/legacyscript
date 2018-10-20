@@ -62,12 +62,6 @@ function interpret(tempFile, tempR, tempC){
       open++;
       break;
     case "end":
-      open--;
-      if(open < 0){
-        error("Syntax error. Unexpected end statement.", ln, 1);
-      }
-      delete scope[scopeP];
-      scopeP--;
       break
     default:
       error("Syntax error. Unknown statement.", ln, 1);
@@ -215,6 +209,21 @@ function createMath(tempSet, tempOp, tempSetting, tempScope){
   } else {
     localScope[tempScope].runs.math.push(new Ex(tempSet, tempOp, tempSetting));
   }
+}
+
+function createEnd(tempParams, tempState, tempTag, tempScope){
+  let param = tempParams.split("(");
+  param = param[1].split(")");
+  param = param[0];
+  param = parseInt(param);
+  open -= param;
+  if(open < 0){
+   error("Syntax error. Unexpected end statement.", ln, 1);
+  }
+  for(i=0; i<param; i++){
+    delete scope[scopeP];
+  }
+   scopeP--;
 }
 
 function error(tempError, tempLn, tempCol){
