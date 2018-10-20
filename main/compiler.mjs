@@ -62,7 +62,7 @@ function loadTok(tempC, tempFile, tempR){
               }
               tok = tok + `[${tempVal}]`;
               if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
-                error(`Syntax error. Invalid or missing tag, got ${tempFile[z+3]}`, Ln, Col);
+                error(`Syntax error. Invalid or missing tag, got ${tempFile[z+3]}`, Ln, Col+3);
               }
               tok = tok + `[${tempFile[z+3]}]`;
               break;
@@ -88,7 +88,7 @@ function loadTok(tempC, tempFile, tempR){
 }
 
 function error(tempErr, tempLn, tempCo){
-    throw(`Error Detected: ${tempErr} at Ln.${tempLn} Col${tempCo}`);
+    throw(`Error Detected: ${tempErr} at Ln.${tempLn+1} Col${tempCo+1}`);
 }
 
 fs.writeFileSync("./project/toks.tok", tok, (err) => {
