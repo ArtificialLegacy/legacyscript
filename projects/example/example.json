@@ -1,0 +1,12 @@
+{
+"name": "example",
+"author": "ArtificialLegacy",
+"scripts": [
+  "script.lg",
+],
+"toks": [
+  "script.tok",
+],
+"entry": "script.lg",
+"license": "MIT",
+}
