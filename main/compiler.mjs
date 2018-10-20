@@ -76,3 +76,5 @@ fs.writeFileSync(`./projects/${project.project}/${entry}.tok`, tok, (err) => {
     error("Build failed.", "END", "END");
   }
 });
+
+console.log("Compilation Finished!");
