@@ -38,7 +38,7 @@ for(let i = 0; i < file.length; i++) {
 
 function interpret(tempFile, tempR, tempC){
   let compile = tempFile.split("[");
-  for(i=0; i<compile.length; i++){
+  for(let i=0; i<compile.length; i++){
     let store = compile[i].split("]");
     compile[i] = store[0];
   }
