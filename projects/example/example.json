@@ -2,10 +2,10 @@
 "name": "example",
 "author": "ArtificialLegacy",
 "scripts": [
-  "script.lg"
+  "script"
 ],
 "toks": [
-  "script.tok"
+  "script"
 ],
 "entry": "script.lg",
 "license": "MIT"
