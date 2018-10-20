@@ -45,7 +45,7 @@ function loadTok(tempC, tempFile, tempR){
         } else {
             tok = tok + `[${compile[5].slice(-1)}]}\n`;  
         }
-        if(compile[6] !== ";"){
+        if(compile[6][0] !== ";"){
           error(`SyntaxError. Expected ';' got '${compile[6]}'`, Ln, 6);  
         }
         if(compile[7]){
