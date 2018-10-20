@@ -4,7 +4,10 @@ const fs = settings.fs;
 
 import syntax from './index/methods.mjs';
 
-var file = fs.readFileSync(`./project/script.ls`).toString().split("\n");
+let project = JSON.parse(fs.readFileSync("./compile.json", "utf8"));
+let entry = JSON.parse(fs.readFileSync(`./project/${project.project}/${project}.json`, "utf8"));
+
+var file = fs.readFileSync(`./projects/${project.project}/${entry}.lg`).toString().split("\n");
 
 let Ln = 0;
 
@@ -58,7 +61,7 @@ function error(tempErr, tempLn, tempCo){
     throw(`Error Detected: ${tempErr} at Ln.${tempLn+1} Col${tempCo+1}`);
 }
 
-fs.writeFileSync("./project/toks.tok", tok, (err) => {
+fs.writeFileSync(`./projects/${project.project}/${project.project}.tok`, tok, (err) => {
   if(err){
     console.log(err);
     error("Build failed.", "END", "END");
