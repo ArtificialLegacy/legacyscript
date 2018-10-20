@@ -2,7 +2,7 @@ import settings from '../config.js';
 
 const fs = settings.fs;
 
-let project = JSON.parse(fs.readFileSync("./run.json", "utf8"));
+let project = JSON.parse(fs.readFileSync("./compile.json", "utf8"));
 let entrySet = JSON.parse(fs.readFileSync(`./projects/${project.project}/${project.project}.json`, "utf8"));
 let entry = entrySet.entry
 
