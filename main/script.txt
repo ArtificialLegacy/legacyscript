@@ -3,7 +3,7 @@ TAG = g (global), l (local), c (constant)
 
 method METHOD_NAME : (PARAMETERS) : TAG ;
 
-run METHOD_NAME (PARAMETERS) : TAG ;
+run METHOD_NAME : (PARAMETERS) : TAG ;
 TAG = d (default)
 
 math VARIABLE_NAME : OPERATOR : (PARAMETERS) ;
