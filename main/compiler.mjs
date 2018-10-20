@@ -6,6 +6,9 @@ import syntax from './index/methods.mjs';
 
 var file = fs.readFileSync(`./project/script.ls`).toString().split("\n");
 
+let Ln = 0;
+let Col = 0;
+
 var tok = "";
 /*
 for(i in file) {
@@ -16,6 +19,7 @@ for(i in file) {
 let fileStrings = "";
 
 for(let i = 0; i < file.length; i++) {
+  Ln = i;
   fileStrings = file[i];
   let check = "";
   for(let r = 0; r < 100; r++){
@@ -35,28 +39,30 @@ function loadTok(tempC, tempFile, tempR){
       tok = tok + "{init";
       let tempVar = "";
       for(let l=5; l<tempFile.length; l++){
+        Col = l;
         if(tempFile[l] !== " "){
           tempVar = tempVar + tempFile[l];  
         }
         if(tempFile[l] == " "){
           if(tempFile[l+1] !== ":"){
-            error("Syntax error.", i, l);
+            error("Syntax error.", Ln, Col);
             break;
           }
           tok = tok + `[${tempVar}]`;
           let tempVal = "";
           for(let z=l+3; z<tempFile.length; z++){
+            Col = z;
             if(tempFile[z] !== " "){
                 tempVal = tempVal + tempFile[z];  
             }
             if(tempFile[z] == " "){
               if(tempFile[z+1] !== ":"){
-                error("Syntax error.", i, z);
+                error("Syntax error.", Ln, Col);
                 break;
               }
               tok = tok + `[${tempVal}]`;
               if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
-                error("Syntax error.", i, z);
+                error("Syntax error.", Ln, Col);
               }
               tok = tok + `[${tempFile[z+3]}]`;
               break;
