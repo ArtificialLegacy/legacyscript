@@ -1,0 +1,27 @@
+init exampleVar : "example" : g ;
+
+construct.list (exampleVar2) : r : d ;
+index.list (exampleVar2, 0, "test") : r : d ;
+print.cons (index.list(exampleVar2, 0)) : r : d ;
+
+edit.del (exampleVar2) :r : d ;
+print.cons (exampleVar2) : r : d ;
+
+method exampleMethod : (temp1) : r ;
+  init exampleVar2 : "local var" : l ;
+  print.cons (temp1) : r : d ;
+  print.info (exampleVar2) : r : d ;
+}
+print.info (exampleVar2) : r : d ;
+
+set.random (exampleVar2) : r : d ;
+math exampleVar2 : * : (exampleVar2) ;
+print.cons (exampleVar2) : r : d ;
+
+exampleMethod (exampleVar) : r: d ;
+
+~~ This is a comment :D ~~
+
+~~
+Comments can be multiple lines!
+~~
