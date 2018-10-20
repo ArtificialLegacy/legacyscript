@@ -54,9 +54,6 @@ MATH:
 OPERATORS:
 ==
 !=
-||
-&&
-$$
 
 CONSTANTS:
 undefined
