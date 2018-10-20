@@ -43,6 +43,7 @@ function loadTok(tempC, tempFile, tempR){
         if(compile[4] !== ":"){
             error(`Syntax error. Expected ':' got '${compile[4]}'`, Ln, 4);
         } else {
+            compile[5].replace("\n", "");
             tok = tok + `[${compile[5]}]}\n`;  
         }
         if(compile[6]){
