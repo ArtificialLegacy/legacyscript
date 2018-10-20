@@ -5,7 +5,7 @@ const fs = settings.fs;
 import syntax from './index/methods.mjs';
 
 let project = JSON.parse(fs.readFileSync("./compile.json", "utf8"));
-let entrySet = JSON.parse(fs.readFileSync(`./project/${project.project}/${project}.json`, "utf8"));
+let entrySet = JSON.parse(fs.readFileSync(`./project/${project.project}/${project.project}.json`, "utf8"));
 let entry = entrySet.entry
 
 var file = fs.readFileSync(`./projects/${project.project}/${entry}.lg`).toString().split("\n");
