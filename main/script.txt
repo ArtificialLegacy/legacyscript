@@ -1,5 +1,5 @@
 init VARIABLE_NAME : VARIABLE_DEFINITION : TAG ;
-TAG = g (global), l (local), c (constant)
+TAG = g (global), l (local), c (constant), p (permanent)
 
 method METHOD_NAME : (PARAMETERS) : TAG ;
 
