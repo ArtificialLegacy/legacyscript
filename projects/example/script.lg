@@ -8,9 +8,9 @@ run edit.del : (exampleVar2) : d ;
 run print.cons : (exampleVar2) : r : d ;
 
 method exampleMethod : s : d ;
-  init exampleVar2 : "local var" : l ;
-  run print.cons : (temp1) : d ;
-  run print.info : (exampleVar2) : d ;
+init exampleVar2 : "localvar" : l ;
+run print.cons : (temp1) : d ;
+run print.info : (exampleVar2) : d ;
 end (1) : r : d ;
 
 run print.info : (exampleVar2) : d ;
