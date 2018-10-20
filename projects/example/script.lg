@@ -5,7 +5,7 @@ run index.list : (exampleVar2,0,"test") : d ;
 run print.cons : (index.list(exampleVar2,0)) : d ;
 
 run edit.del : (exampleVar2) : d ;
-run print.cons : (exampleVar2) : r : d ;
+run print.cons : (exampleVar2) : d ;
 
 method exampleMethod : s : d ;
 init exampleVar2 : "localvar" : l ;
