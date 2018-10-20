@@ -1,12 +1,49 @@
-int VARIABLE_NAME : VARIABLE_DEFINITION : TAG
+init VARIABLE_NAME : VARIABLE_DEFINITION : TAG
 TAG = g (global), l (local), c (constant)
 
 method METHOD_NAME (PARAMETERS) {
 
 }
 
-METHOD_NAME(PARAMETERS);
+METHOD_NAME(PARAMETERS)
 
-print.TAG(PARAMETERS);
-TAG = c (console), a (alert), p (prompt)
-PARAMETERS = [0] (EXPRESSION, QUESTION, RETURN)
+print.TAG(PARAMETERS)
+TAG = cons, clear, info, warn, error, count, stime, etime
+PARAMETERS = [0] (EXPRESSION)
+
+edit.TAG(PARAMETERS)
+TAG = round, floor, ceil, flip, abs, del
+PARAMETERS = [0] (EXPRESSION)
+
+construct.TAG(PARAMETERS)
+TAG = list, map
+PARAMETERS = [0] (RETURN)
+
+index.TAG(PARAMETERS)
+TAG = list, map
+PARAMETERS = [0] (KEY) [1]* (VALUE)
+
+set.TAG(PARAMETERS)
+TAG = random, min, max, sqr
+PARAMETERS = [0] (EXPRESSION) [0+]* (INTEGERS)
+
+if (VARIABLE1 : LOGICAL-STATEMENT : VARIABLE2) {
+
+}
+
++
+-
+*
+/
+%
+^
+++
+--
+
+=
+!=
+
+undefined
+null
+true
+false
