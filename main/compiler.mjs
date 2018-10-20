@@ -56,7 +56,7 @@ function loadTok(tempC, tempFile, tempR){
               }
               tok = tok + `[${tempVal}]`;
               if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
-                errCheck = true;
+                error("Syntax error.", i, z);
               }
               tok = tok + `[${tempFile[z+3]}]`;
               break;
