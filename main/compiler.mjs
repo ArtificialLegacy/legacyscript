@@ -47,7 +47,7 @@ function loadTok(tempC, tempFile, tempR){
         if(compile[4] !== ":"){
             error(`Syntax error. Expected ':' got '${compile[4]}'`, Ln, 4);
         } else {
-            tok = tok + `[${compile[5].slice(-1)}]}\n`;  
+            tok = tok + `[${compile[5]}`;  
         }
         if(compile[6][0] !== ";"){
           error(`SyntaxError. Expected ';' got '${compile[6]}'`, Ln, 6);  
@@ -62,7 +62,7 @@ function error(tempErr, tempLn, tempCo){
     throw(`Error Detected: ${tempErr} at Ln.${tempLn+1} Col${tempCo+1}`);
 }
 
-fs.writeFileSync(`./projects/${project.project}/${project.project}.tok`, tok, (err) => {
+fs.writeFileSync(`./projects/${project.project}/${entry}.tok`, tok, (err) => {
   if(err){
     console.log(err);
     error("Build failed.", "END", "END");
