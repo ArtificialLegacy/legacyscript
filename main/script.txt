@@ -8,8 +8,7 @@ TAG = d (default), i (internal)
 run METHOD_NAME : (PARAMETERS) : TAG ;
 TAG = d (default)
 
-math VARIABLE_NAME : OPERATOR : (PARAMETERS) ;
-PARAMETERS = [0+]* (VARIABLE_NAME)
+math VARIABLE_NAME : OPERATOR : VARIABLE_NAME ;
 
 print.TAG (PARAMETERS) : TAG ;
 TAG = cons, clear, info, warn, error, count, stime, etime
