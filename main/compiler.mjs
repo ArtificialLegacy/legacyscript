@@ -21,18 +21,26 @@ for(i in file) {
 
 let fileStrings = "";
 
+var cOpen = false;
+
 for(let i = 0; i < file.length; i++) {
   Ln = i;
   fileStrings = file[i];
   let check = "";
   for(let r = 0; r < 100; r++){
     check = check + fileStrings[r];
-    for(let c in syntax){
-      if(check == c){
-        loadTok(c, fileStrings, r);
-        break;
-      }
+    if(check == "~~"){
+        if(cOpen) cOpen = false;
+        if(!cOpen) cOpen = true;
     }
+    if(!cOpen){
+        for(let c in syntax){
+            if(check == c){
+                loadTok(c, fileStrings, r);
+                break;
+            }
+        }
+     }
   }
 }
 
