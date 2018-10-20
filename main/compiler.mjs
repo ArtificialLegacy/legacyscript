@@ -52,8 +52,8 @@ function loadTok(tempC, tempFile, tempR){
           tok = tok + `[${tempVar}]`;
           let tempVal = "";
           for(let z=l+3; z<tempFile.length; z++){
-            if(tempFile[l] !== " "){
-                tempVal = tempVal + tempFile[l];  
+            if(tempFile[z] !== " "){
+                tempVal = tempVal + tempFile[z];  
             }
             if(tempFile[z] == " "){
               if(tempFile[z+1] !== ":"){
