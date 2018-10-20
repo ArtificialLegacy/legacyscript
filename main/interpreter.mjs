@@ -57,11 +57,14 @@ function interpret(tempFile, tempR, tempC){
       createRun(compile[1], compile[2], compile[3], "run", scope[scopeP]);
       break;
     case "math":
+      createMath(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "if":
       open++;
+      createIf(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "end":
+      createEnd(compile[1], compile[2], compile[3]);
       break
     default:
       error("Syntax error. Unknown statement.", ln, 1);
@@ -79,13 +82,12 @@ let globalScope = {
   "runs": {
     
   },
+  "ifs": {
+    
+  }
 };
 
 let localScope = {
-  
-};
-
-let bin = {
   
 };
 
@@ -224,6 +226,22 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
     delete scope[scopeP];
   }
    scopeP--;
+}
+
+class If {
+  constructor(tempVar, tempOp, tempComp){
+    this.var = tempVar;
+    this.op = tempOp;
+    this.comp = tempComp;
+  }
+}
+
+function createIf(tempVar, tempOp, tempComp, tempScope){
+  if(tempScope == "global"){
+    globalScope.ifs.push(new If(tempVar, tempOp, tempComp));
+  } else {
+    localScope[tempScope].ifs.push(new If(tempVar, tempOp, tempComp));
+  }
 }
 
 function error(tempError, tempLn, tempCol){
