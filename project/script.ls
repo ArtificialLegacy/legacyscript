@@ -1,4 +1,4 @@
-init exampleVar : "example : g
+init exampleVar : "example" : g
 
 method exampleMethod(temp1) {
   print.c(temp1)
