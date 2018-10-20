@@ -1,6 +1,8 @@
 const syntax = {
-  "int": true,
+  "init": true,
   "method": true,
+  "run": true,
+  "math": true,
   "print.cons": true,
   "print.count": true,
   "print.stime": true,
@@ -24,6 +26,7 @@ const syntax = {
   "set.max": true,
   "set.sqr": true,
   "if": true,
+  "end": true,
 };
 
 export default syntax;
