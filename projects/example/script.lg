@@ -11,7 +11,8 @@ method exampleMethod : (temp1) : r ;
   init exampleVar2 : "local var" : l ;
   print.cons (temp1) : r : d ;
   print.info (exampleVar2) : r : d ;
-}
+end (1) : r : d ;
+
 print.info (exampleVar2) : r : d ;
 
 set.random (exampleVar2) : r : d ;
