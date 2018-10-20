@@ -13,17 +13,11 @@ for(i in file) {
 }
 */
 
-let errCheck = false;
-
 let fileStrings = "";
 
 for(let i = 0; i < file.length; i++) {
   fileStrings = file[i];
   let check = "";
-  if(errCheck == true) {
-    console.log("Error detected. Code compiler stopped.");
-    break;
-  }
   for(let r = 0; r < 100; r++){
     check = check + fileStrings[r];
     for(let c in syntax){
@@ -46,7 +40,7 @@ function loadTok(tempC, tempFile, tempR){
         }
         if(tempFile[l] == " "){
           if(tempFile[l+1] !== ":"){
-            errCheck = true;
+            error("Syntax error.", i, l);
             break;
           }
           tok = tok + `[${tempVar}]`;
@@ -57,7 +51,7 @@ function loadTok(tempC, tempFile, tempR){
             }
             if(tempFile[z] == " "){
               if(tempFile[z+1] !== ":"){
-                errCheck = true;
+                error("Syntax error.", i, z);
                 break;
               }
               tok = tok + `[${tempVal}]`;
@@ -87,6 +81,13 @@ function loadTok(tempC, tempFile, tempR){
   }
 }
 
+function error(tempErr, tempLn, tempCo){
+    throw(`Error Detected: ${tempErr} at Ln.${tempLn} Col${tempCo}`);
+}
+
 fs.writeFileSync("./project/toks.tok", tok, (err) => {
-  if(err) throw(err);
+  if(err){
+    console.log(err);
+    error("Build failed.", "END", "END");
+  }
 });
