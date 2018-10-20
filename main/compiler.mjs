@@ -7,7 +7,6 @@ import syntax from './index/methods.mjs';
 var file = fs.readFileSync(`./project/script.ls`).toString().split("\n");
 
 let Ln = 0;
-let Col = 0;
 
 var tok = "";
 /*
@@ -34,57 +33,22 @@ for(let i = 0; i < file.length; i++) {
 }
 
 function loadTok(tempC, tempFile, tempR){
-  switch(tempC){
-    case "init":
-      tok = tok + "{init";
-      let tempVar = "";
-      for(let l=5; l<tempFile.length; l++){
-        Col = l;
-        if(tempFile[l] !== " "){
-          tempVar = tempVar + tempFile[l];  
+    let compile = tempFile.split(" ");
+    tok = tok + `{${compile[0]}`;
+    tok = tok + `[${compile[1]}]`;
+    if(compile[2] !== ":"){
+      error(`Syntax error. Expected ':' got '${compile[2]}'`, Ln, 2);  
+    } else {
+        tok = tok + `[${compile[3]}]`;
+        if(compile[4] !== ":"){
+            error(`Syntax error. Expected ':' got '${compile[4]}'`, Ln, 4);
+        } else {
+            tok = tok + `[${compile[4]}]}`;  
         }
-        if(tempFile[l] == " "){
-          if(tempFile[l+1] !== ":"){
-            error(`Syntax error. Expected : got ${tempFile[l+1]}`, Ln, Col);
-            break;
-          }
-          tok = tok + `[${tempVar}]`;
-          let tempVal = "";
-          for(let z=l+3; z<tempFile.length; z++){
-            Col = z;
-            if(tempFile[z] !== " "){
-                tempVal = tempVal + tempFile[z];  
-            }
-            if(tempFile[z] == " "){
-              if(tempFile[z+1] !== ":"){
-                error(`Syntax error; Expected : got ${tempFile[z+1]}`, Ln, Col);
-                break;
-              }
-              tok = tok + `[${tempVal}]`;
-              if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
-                error(`Syntax error. Invalid or missing tag, got ${tempFile[z+3]}`, Ln, Col+3);
-              }
-              tok = tok + `[${tempFile[z+3]}]`;
-              break;
-            }
-          }
+        if(compile[5]){
+            error(`Syntax error. Syntax overflow. Expected ' ' got ${compile[5]}`);
         }
-      }
-      tok = tok + "}\n";
-      break;
-    case "method":
-      break;
-    case "print.cons":
-      break;
-    case "print.warn":
-      break;
-    case "print.error":
-      break;
-    case "print.info":
-      break;
-    default: 
-      break;
-  }
+    }
 }
 
 function error(tempErr, tempLn, tempCo){
