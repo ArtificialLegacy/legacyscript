@@ -62,13 +62,6 @@ MATH:
 ++
 --
 
-SETS:
-=
-+=
--=
-*=
-/=
-
 OPERATORS:
 ==
 !=
@@ -82,3 +75,9 @@ null
 true
 false
 pi
+
+COMMENTS:
+~~ text ~~
+~~
+text
+~~
