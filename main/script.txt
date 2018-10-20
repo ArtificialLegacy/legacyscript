@@ -47,3 +47,4 @@ undefined
 null
 true
 false
+pi
