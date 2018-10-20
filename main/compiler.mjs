@@ -45,7 +45,7 @@ function loadTok(tempC, tempFile, tempR){
         }
         if(tempFile[l] == " "){
           if(tempFile[l+1] !== ":"){
-            error("Syntax error.", Ln, Col);
+            error(`Syntax error. Expected : got ${tempFile[l+1]}`, Ln, Col);
             break;
           }
           tok = tok + `[${tempVar}]`;
@@ -57,12 +57,12 @@ function loadTok(tempC, tempFile, tempR){
             }
             if(tempFile[z] == " "){
               if(tempFile[z+1] !== ":"){
-                error("Syntax error.", Ln, Col);
+                error(`Syntax error; Expected : got ${tempFile[z+1]}`, Ln, Col);
                 break;
               }
               tok = tok + `[${tempVal}]`;
               if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
-                error("Syntax error.", Ln, Col);
+                error(`Syntax error. Invalid or missing tag, got ${tempFile[z+3]}`, Ln, Col);
               }
               tok = tok + `[${tempFile[z+3]}]`;
               break;
