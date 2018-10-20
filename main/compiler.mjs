@@ -50,11 +50,17 @@ function loadTok(tempC, tempFile, tempR){
             break;
           }
           tok = tok + `[${tempVar}]`;
+          let tempVal = "";
           for(let z=l+3; z<tempFile.length; z++){
+            if(tempFile[l] !== " "){
+                tempVal = tempVal + tempFile[l];  
+            }
             if(tempFile[z] == " "){
               if(tempFile[z+1] !== ":"){
                 errCheck = true;
+                break;
               }
+              tok = tok + `[${tempVar}]`;
               if(tempFile[z+3] !== "g" || tempFile[z+3] !== "l" || tempFile[z+3] !== "c"){
                 errCheck = true;
               }
