@@ -45,8 +45,11 @@ function loadTok(tempC, tempFile, tempR){
         } else {
             tok = tok + `[${compile[5].slice(-1)}]}\n`;  
         }
-        if(compile[6]){
-            error(`Syntax error. Syntax overflow. Expected ' ' got ${compile[5]}`);
+        if(compile[6] !== ";"){
+          error(`SyntaxError. Expected ';' got '${compile[6]}'`, Ln, 6);  
+        }
+        if(compile[7]){
+            error(`Syntax error. Syntax overflow. Expected ' ' got ${compile[5]}`, Ln, 7);
         }
     }
 }
