@@ -197,7 +197,7 @@ function createScope(tempName){
 	if(!localScope[tempName].inits) localScope[tempName].inits = [];
 	if(!localScope[tempName].runs) localScope[tempName].runs = {"normal": [],"math": [], };
 	if(!localScope[tempName].ifs) localScope[tempName].ifs = [];
-	if(localScope[tempName].variables) localScope[tempName].variables = {};
+	if(localScope[tempName].variables) localScope[tempName].variables = globalScope.variables;
 	if(!localScope[tempName].commands) localScope[tempName].commands = [];
 }
 
@@ -373,7 +373,12 @@ function loadCode(i, s){
 			if(!globalScope.methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
 			}
+			if(run.tag == "i"){
+				runI(run);
+				break;
+			}
 			createScope(run.name);
+			localScope[run.name].variables = globalScope.variables;
 			for(let c=0; c<run.params; c++){
 				localScope[run.name].variables[run.params[c].name] = run.params[c];	
 			}
@@ -436,6 +441,7 @@ function loadCode(i, s){
 				runI(run);
 				break;
 			}
+			localScope[run.name].variables = globalScope.variables;
 			createScope(run.name);
 			for(c=0; c<run.params; c++){
 				localScope[run.name].variables[run.params[c].name] = run.params[c];	
