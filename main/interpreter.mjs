@@ -521,6 +521,8 @@ function loadCode(i, s){
 			break;
 		case "gin":
 			init = globalScope.inits[pointerGIN];
+			console.log(pointerGIN);
+			console.dir(globalScope.inits);
 			if(globalScope.variables[init.name]){
 				error(`Syntax error. ${init.name} has already been defined.`);	
 			}
