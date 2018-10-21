@@ -6,3 +6,5 @@ const operators = {
   "%": true,
   "^": true,
 }
+
+export default operators;
