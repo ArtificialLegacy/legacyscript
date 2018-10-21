@@ -17,7 +17,7 @@ end (1) : r : d ;
 run print.info : (exampleVar2) : d ;
 
 run set.random : (exampleVar2) : d ;
-math exampleVar2 : * : (exampleVar2) ;
+math exampleVar2 : * : exampleVar2 ;
 run print.cons : (exampleVar2) : d ;
 
 run exampleMethod : (exampleVar) : d ;
