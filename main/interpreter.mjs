@@ -18,6 +18,15 @@ var thread = 0;
 
 var commands = [];
 
+var pointerGR = 0;
+var pointerGRM = 0;
+var pointerLR = 0;
+var pointerLRM = 0;
+var pointerGI = 0;
+var pointerLI = 0;
+var pointerGIN = 0;
+var pointerLIN = 0;
+
 class Var {
   constructor(tempName, tempValue, tempScope, tempType){
     this.name = tempName;
@@ -87,10 +96,16 @@ let globalScope = {
     "math": [
       
     ],
+    "normal": [
+	    
+    ]
   },
-  "ifs": {
+  "ifs": [
     
-  }
+  ],
+  "inits": [
+		
+   ]
 };
 
 let localScope = {
@@ -168,7 +183,15 @@ function interpret(tempFile, tempR, tempC){
   }
 }
 
-createVar("pi", "3.1415926535897545", "p", "global");
+function createScope(tempName){
+	if(!localScope[tempName]) localScope[tempName] = {};
+	if(!localScope[tempName].inits) localScope[tempName].inits = [];
+	if(!localScope[tempName].runs) localScope[tempName].runs = {"normal": [],"math": [], };
+	if(!localScope[tempName].ifs) localScope[tempName].ifs = [];
+	if(localScope[tempName].variables) localScope[tempName].variables = {};
+}
+
+createVar("pi", "3.1415926535897454", "constant", "global");
 
 function createInit(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
@@ -178,42 +201,26 @@ function createInit(tempName, tempValue, tempTag, tempScope){
      globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "normal");
   } else if(tempTag == "l"){
      if(tempScope !== "global"){
-	 if(!localScope[tempScope]) localScope[tempScope] = {};
-	 if(!localScope[tempScope].inits) localScope[tempScope].inits = {};
-	 if(localScope[tempScope.inits[tempName]){
-	    error(`Syntax  error. ${tempName} already has a declaration.` ln, 1);
-         }
-         localScope[tempScope].inits[tempName] = new Init(tempName, tempValue, "local", "normal");
+	 createScope(tempScope);
+         localScope[tempScope].inits.push(new Init(tempName, tempValue, "local", "normal"));
      } else {
-         if(globalScope.inits[tempName]){
-	    error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
-	 }
-         globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "normal");
+         globalScope.inits.push(new Init(tempName, tempValue, "global", "normal"));
      }
     } else if(tempTag == "c"){
          if(tempScope !== "global"){
-            if(!localScope[tempScope]) localScope[tempScope] = {};
-            if(!localScope[tempScope].inits) localScope[tempScope].inits = {};
-            if(localScope[tempScope].inits[tempName]){
-               error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
-            }
-            localScope[tempScope].inits[tempName] = new Init(tempName, tempValue, "local", "constant");
+            createScope();
+            localScope[tempScope].inits.push(new Init(tempName, tempValue, "local", "constant"));
          } else {
-            if(globalScope.inits[tempName]){
-               error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
-            }
-            globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "constant");
+            globalScope.inits.push(new Init(tempName, tempValue, "global", "constant"));
          }
      } else if(tempTag == "p"){
-        if(globalScope.inits[tempName]){
-           error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
-        }
-        globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "constant");
+        globalScope.inits.push(new Init(tempName, tempValue, "global", "constant"));
      }
   }
 }
 
 function createVar(tempName, tempValue, tempTag, tempScope){
+console.log("test");
   if(tempTag == "g"){
     if(globalScope.variables[tempName]){
       error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
@@ -221,8 +228,7 @@ function createVar(tempName, tempValue, tempTag, tempScope){
      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
   } else if(tempTag == "l"){
     if(tempScope !== "global"){
-	  if(!localScope[tempScope]) localScope[tempScope] = {};
-	  if(!localScope[tempScope].variables) localScope[tempScope].variables = {};
+      createScope(tempScope);
       if(localScope[tempScope].variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
@@ -235,40 +241,7 @@ function createVar(tempName, tempValue, tempTag, tempScope){
     }
   } else if(tempTag == "c"){
     if(tempScope !== "global"){
-      if(localScope[tempScope].variables[tempName]){
-        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
-      }
-      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "constant");
-    } else {
-      if(globalScope.variables[tempName]){
-        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
-      }
-      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
-    }
-  } else if(tempTag == "p"){
-    if(globalScope.variables[tempName]){
-      error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
-    }
-    globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
-  } else {
-    error(`Syntax error. Invalid or missing tag. Got '${tempTag}'`,  ln, 6);
-  }     globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
-  } else if(tempTag == "l"){
-    if(tempScope !== "global"){
-	  if(!localScope[tempScope]) localScope[tempScope] = {};
-	  if(!localScope[tempScope].variables) localScope[tempScope].variables = {};
-      if(localScope[tempScope].variables[tempName]){
-        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
-      }
-      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "normal");
-    } else {
-      if(globalScope.variables[tempName]){
-        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
-      }
-      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
-    }
-  } else if(tempTag == "c"){
-    if(tempScope !== "global"){
+	createScope(tempScope);
       if(localScope[tempScope].variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
@@ -323,13 +296,10 @@ function createRun(tempName, tempParams, tempTag, tempType, tempScope){
   params[1] = params[1].split(")");
   params = params[1][0].split(",");
   if(tempScope == "global"){
-  if(!globalScope.runs[tempName]) globalScope.runs[tempName] = [];
-    globalScope.runs[tempName].push(new Run(tempName, params, tempTag, tempType));
+    globalScope.runs.normal.push(new Run(tempName, params, tempTag, tempType));
   } else {
-	if(!localScope[tempScope]) localScope[tempScope] = {};
-	if(!localScope[tempScope].runs) localScope[tempScope].runs = {};
-	if(!localScope[tempScope].runs[tempName]) localScope[tempScope].runs[tempName] = [];
-    localScope[tempScope].runs[tempName].push(new Run(tempName, params, tempTag, tempType));
+    createScope(tempScope);
+    localScope[tempScope].runs.normal.push(new Run(tempName, params, tempTag, tempType));
   }
 }
 
@@ -337,9 +307,7 @@ function createMath(tempSet, tempOp, tempSetting, tempScope){
   if(tempScope == "global"){
     globalScope.runs.math.push(new Ex(tempSet, tempOp, tempSetting));
   } else {
-	if(!localScope[tempScope]) localScope[tempScope] = {};
-	if(!localScope[tempScope].runs) localScope[tempScope].runs = {};
-	if(!localScope[tempScope].runs.math) localScope[tempScope].runs.math = [];
+    createScope(tempScope);
     localScope[tempScope].runs.math.push(new Ex(tempSet, tempOp, tempSetting));
   }
 }
@@ -374,3 +342,37 @@ function error(tempError, tempLn, tempCol){
 }
 
 console.log("Interpretted Code.");
+
+function runCode(){
+	for(i=0; i<commands.length; i++){
+		switch(commands[i]){
+			case "gr":
+				pointerGR++;
+				break;
+			case "grm":
+				pointerGRM++;
+				break;
+			case "lr":
+				pointerLR++;
+				break;
+			case "lrm":
+				pointerLRM++;
+				break;
+			case "gi":
+				pointerGI++;
+				break;
+			case "li":
+				pointerLI++;
+				break;
+			case "gin":
+				pointerGIN++;
+				break;
+			case "lin":
+				pointerLIN++;
+				break;
+			default:
+				error(`Unkown parsing command. Got ${commands[i]}.`, i, 1);
+				break;
+		}
+	}
+}
