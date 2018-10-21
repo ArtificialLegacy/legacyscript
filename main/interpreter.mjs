@@ -724,7 +724,7 @@ function runI(tempRun){
 			}
 			break;
 		case "index.map":
-			if(scope[scopeP]] == "global"){
+			if(scope[scopeP] == "global"){
 				if(tempRun.tag = "r"){
 					if(!globalScope.variables[tempRun.params[0]]){
 						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
