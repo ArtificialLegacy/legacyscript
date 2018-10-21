@@ -455,8 +455,24 @@ function loadCode(i, s){
 			}
 			let x = parseInt(localScope[scope[scopeP]].variables[math.set].value);
 			let y = parseInt(localScope[scope[scopeP]].variables[math.setinng].value);
-			if(isNaN(x) || isNaN(y)) error(`Syntax error. You cannot do math on strings.`);
-			let z = 0;
+			if(isNaN(x) || isNaN(y)){
+				x = localScope[scope[scopeP]].variables[math.set].value;
+				y = localScope[scope[scopeP]].variables[math.setting].value;
+			}
+			let z;
+			if(typeof x == typeof "string" && typeof y == typeof "string"){
+				switch(math.op){
+					case "+":
+						z = x + y;
+						break;
+					case "=":
+						z = y;
+						break;
+					default:
+						error(`Syntax error. Invalid operator.`, ln, 3);
+						break;
+				}
+			}
 			switch(math.op){
 				case "+":
 					z = x + y;
@@ -524,6 +540,267 @@ function loadCode(i, s){
 function runI(tempRun){
 	switch(tempRun.name){
 		case "print.cons":
+			console.log(tempRun.params[0]);
+			break;
+		case "print.clear":
+			console.clear();
+			break;
+		case "print.info":
+			console.info(tempRun.params[0]);
+			break;
+		case "print.warn":
+			console.warn(tempRun.params[0]);
+			break;
+		case "print.error":
+			console.error()tempRun.params[0];
+			break;
+		case "print.count":
+			console.count();
+			break;
+		case "print.stime":
+			console.time(tempRun.params[0]);
+			break;
+		case "print.etime":
+			console.timeEnd(tempRun.params[0]);
+			break;
+		case "edit.round":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.round(globalScope.variables[tempRun.params[0]].value);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.round(localScope[scope[scopeP]].variables[tempRun.params[0]].value);	
+			}
+			break;
+		case "edit.floor":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.floor(globalScope.variables[tempRun.params[0]].value);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.floor(localScope[scope[scopeP]].variables[tempRun.params[0]].value);	
+			}
+			break;
+		case "edit.ceil":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.ceil(globalScope.variables[tempRun.params[0]].value);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.ceil(localScope[scope[scopeP]].variables[tempRun.params[0]].value);	
+			}
+			break;
+		case "edit.flip":
+			let value;
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				value = globalScope.variables[tempRun.params[0]].value;
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				value = globalScope.variables[tempRun.params[0]].value
+			}
+			if(value == "true" || value == "false"){
+				if(value == "true"){
+					value = false;
+				} else {
+					value = true;	
+				}
+			} else {
+				let value = parseInt(value);
+				if(typeof value == "integer"){
+					let store = value*2;
+					if(value < 0){
+						value += store;
+					} else if(value > 0){
+						value -= store;
+					} else {
+						value = 0;	
+					}
+				} else {
+					error(`Syntax error. Cannot flip value.`, ln, 3);
+				}
+			}
+			break;
+		case "edit.abs":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.abs(globalScope.variables[tempRun.params[0]].value);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.abs(localScope[scope[scopeP]].variables[tempRun.params[0]].value);	
+			}
+			break;
+		case "edit.del":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				delete globalScope.variables[tempRun.params[0]]
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				delete localScope[scope[scopeP]].variables[tempRun.params[0]]
+			}
+			break;
+		case "construct.list":
+			if(scope[scopeP] == "global"){
+				if(globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is already defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]] = [];
+			} else {
+				if(localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is already defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]] = [];
+			}
+			break;
+		case "construct.map":
+			if(scope[scopeP] == "global"){
+				if(globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is already defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]] = {};
+			} else {
+				if(localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is already defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]] = {};
+			}
+			break;
+		case "index.list":
+			if(scope[scopeP]] == "global"){
+				if(tempRun.tag = "r"){
+					if(!globalScope.variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					globalScope.variables[tempRun.params[2]] = globalScope.variables[tempRun.params[0]][parseInt(tempRun.params[1])];
+				} else {
+					if(!globalScope.variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					globalScope.variables[tempRun.params[0][parseInt(tempRun.params[1])] = localScope[scope[scopeP]][tempRun.params[2]];
+				}
+			} else {
+				if(tempRun.tag = "r"){
+					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					localScope[scope[scopeP]].variables[tempRun.params[2]] = localScope[scope[scopeP]].variables[tempRun.params[0]][parseInt(tempRun.params[1])];
+					
+				} else {
+					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					localScope[scope[scopeP]].variables[tempRun.params[0][parseInt(tempRun.params[1])] = localScope[scope[scopeP]].variables[tempRun.params[2]];
+				}
+			}
+			break;
+		case "index.map":
+			if(scope[scopeP]] == "global"){
+				if(tempRun.tag = "r"){
+					if(!globalScope.variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					globalScope.variables[tempRun.params[2]]  = globalScope.variables[tempRun.params[0]][tempRun.params[1]];
+				} else {
+					if(!globalScope.variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					globalScope.variables[tempRun.params[0][tempRun.params[1]] = localScope[scope[scopeP]][tempRun.params[2]];
+				}
+			} else {
+				if(tempRun.tag = "r"){
+					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					localScope[scope[scopeP]].variables[tempRun.params[2]] = localScope[scope[scopeP]].variables[tempRun.params[0]][tempRun.params[1]];
+					
+				} else {
+					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
+					}
+					localScope[scope[scopeP]].variables[tempRun.params[0][tempRun.params[1]] = localScope[scope[scopeP]].variables[tempRun.params[2]];
+				}
+			}
+			break;
+		case "set.random":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.random();	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.random();	
+			}
+			break;
+		case "set.min":
+			let params = tempRun.params.unshift();
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.min(...params);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.min(...params);	
+			}
+			break;
+		case "set.max":
+			let params = tempRun.params.unshift();
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.max(...params);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.max(...params);	
+			}
+			break;
+		case "set.sqr":
+			if(scope[scopeP] == "global"){
+				if(!globalScope.variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				globalScope.variables[tempRun.params[0]].value = Math.sqr(globalScope.variables[tempRun.params[0]].value);	
+			} else {
+				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
+					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
+				}
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.sqr(localScope[scope[scopeP]].variables[tempRun.params[0]].value);	
+			}
+			break;
+		default:
+			error(`Syntax error. Invalid internal method. Got ${tempRun.name}`, ln, 2);
 			break;
 	}
 }
