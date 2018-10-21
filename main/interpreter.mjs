@@ -518,7 +518,7 @@ function loadCode(i, s){
 			pointerLI++;
 			break;
 		case "gin":
-			let init = globalScope.ints[pointerGIN];
+			init = globalScope.ints[pointerGIN];
 			if(globalScope.variables[init.name]){
 				error(`Syntax error. ${init.name} has already been defined.`);	
 			}
@@ -527,7 +527,7 @@ function loadCode(i, s){
 			break;
 		case "lin":
 			createScope(scope[scopeP]);
-			let init = localScope[scope[scopeP]].ints[pointerLIN];
+			init = localScope[scope[scopeP]].ints[pointerLIN];
 			if(localScope[scope[scopeP]].variables[init.name]){
 				error(`Syntax error. ${init.name} has already been defined.`);	
 			}
