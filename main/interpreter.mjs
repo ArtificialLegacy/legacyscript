@@ -11,12 +11,11 @@ var file = fs.readFileSync(`./projects/${project.project}/${entry}.tok`).toStrin
 let fileStrings = "";
 
 import syntax from './index/methods.mjs';
+import operators from './index/operators.mjs';
 
 var ln = 0;
 
 var thread = 0;
-
-var commands = [];
 
 var pointerGR = 0;
 var pointerGRM = 0;
@@ -105,6 +104,9 @@ let globalScope = {
   ],
   "inits": [
 		
+   ],
+   "commands": [
+	   
    ]
 };
 
@@ -137,9 +139,10 @@ function interpret(tempFile, tempR, tempC){
   switch(tempC){
     case "init":
       if(scope[scopeP] == "global"){
-	commands.push("gin");      
+	globalScope.commands.push("gin");      
       } else {
-	commands.push("lin");      
+	createScope(scope[scopeP]);
+	localScope[scope[scopeP]].commands.push("lin");      
       }
       createInit(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
@@ -151,25 +154,28 @@ function interpret(tempFile, tempR, tempC){
       break;
     case "run":
       if(scope[scopeP] == "global"){
-	 commands.push("gr");     
+	 globalScope.commands.push("gr");     
       } else {
-	 commands.push("lr");
+	 createScope(scope[scopeP]);
+	 localScope[scope[scopeP]].commands.push("lr");
       }
       createRun(compile[1], compile[2], compile[3], "run", scope[scopeP]);
       break;
     case "math":
       if(scope[scopeP] == "global"){
-	 commands.push("grm");
+	 globalScope.commands.push("grm");
       } else {
-	 commands.push("lrm");
+	 createScope(scope[scopeP]);
+	 localScope[scope[scopeP]].commands.push("lrm");
       }
       createMath(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "if":
       if(scope[scopeP] == "global"){
-	  commands.push("gi");    
+	  globalScope.commands.push("gi");    
       } else {
-	  commands.push("li");    
+	  createScope(scope[scopeP]);
+	  localScope[scope[scopeP]].commands.push("li");    
       }
       open++;
       createIf(compile[1], compile[2], compile[3], scope[scopeP]);
@@ -189,9 +195,14 @@ function createScope(tempName){
 	if(!localScope[tempName].runs) localScope[tempName].runs = {"normal": [],"math": [], };
 	if(!localScope[tempName].ifs) localScope[tempName].ifs = [];
 	if(localScope[tempName].variables) localScope[tempName].variables = {};
+	if(!localScope[tempName].commands) localScope[tempName].commands = [];
 }
 
 createVar("pi", "3.1415926535897454", "constant", "global");
+createVar("undefined", "undefined", "constant", "global");
+createVar("null", "null", "constant", "global");
+createVar("true", "true", "constant", "global");
+createVar("false", "false", "constant", "global");
 
 function createInit(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
@@ -322,9 +333,10 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
    error("Syntax error. Unexpected end statement.", ln, 1);
   }
   for(let i=0; i<param; i++){
-    delete scope[scopeP];
+	  localScope[tempScope].commands.push("e");
+    	  delete scope[scopeP];
   }
-   scopeP--;
+   scopeP -= param;
 }
 
 function createIf(tempVar, tempOp, tempComp, tempScope){
@@ -343,36 +355,173 @@ function error(tempError, tempLn, tempCol){
 
 console.log("Interpretted Code.");
 
+scope = ["global"];
+scopeP = 0;
+
 function runCode(){
-	for(i=0; i<commands.length; i++){
-		switch(commands[i]){
-			case "gr":
-				pointerGR++;
+	for(let i=0; i<globalScope.commands.length; i++){
+		loadCode(i, globalScope.commands[i]);
+	}
+}
+
+function loadCode(i, s){
+	switch(s){
+		case "gr":
+			let run = globalScope.runs.normal[pointerGR];
+			if(!globalScope.methods[run.name]){
+				error(`Syntax error. ${run.name} is not defined.`);	
+			}
+			createScope(run.name);
+			for(let c=0; c<run.params; c++){
+				localScope[run.name].variables[run.params[c].name] = run.params[c];	
+			}
+			scope.push(run.name);
+			scopeP++;
+			for(let z=0; z<localScope[run.name].commands.length; z++){
+				loadCode(z, localScope[run.name].commands[z]);
+			}
+			pointerGR++;
+			break;
+		case "grm":
+			let math = globalScope.runs.math[pointerGIN];
+			if(!globalScope.variables[math.set] || !globalScope.variables[math.setting] || !operators[math.op]){
+				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
+			}
+			let x = parseInt(globalScope.variables[math.set].value);
+			let y = parseInt(globalScope.variables[math.setting].value);
+			if(isNaN(x) || isNaN(y)) error(`Syntax error. You cannot do math on strings.`);
+			let z = 0;
+			switch(math.op){
+				case "+":
+					z = x + y;
+					break;
+				case "-":
+					z = x - y;
+					break;
+				case "*":
+					z = x * y;
+					break;
+				case "/":
+					z = x / y;
+					break;
+				case "%":
+					z = x % y;
+					break;
+				case "^":
+					let s = x;
+					for(let c=0; c<y; c++){
+						x = x * s;	
+					}
+					z = x;
+					break;
+				case "=":
+					z = y;
+					break;
+				default:
+					error(`Syntax error. Unknown operator.`, ln, 1);
+					break;
+			}
+			z = toString(z);
+			globalScope.variables[math.set].value = z;
+			pointerGRM++;
+			break;
+		case "lr":
+			let run = localScope[scope[scopeP]].runs.normal[pointerLR];
+			if(!localScope[scope[scopeP]].methods[run.name]){
+				error(`Syntax error. ${run.name} is not defined.`);	
+			}
+			if(run.tag == "i"){
+				runI(run);
 				break;
-			case "grm":
-				pointerGRM++;
-				break;
-			case "lr":
-				pointerLR++;
-				break;
-			case "lrm":
-				pointerLRM++;
-				break;
-			case "gi":
-				pointerGI++;
-				break;
-			case "li":
-				pointerLI++;
-				break;
-			case "gin":
-				pointerGIN++;
-				break;
-			case "lin":
-				pointerLIN++;
-				break;
-			default:
-				error(`Unkown parsing command. Got ${commands[i]}.`, i, 1);
-				break;
-		}
+			}
+			createScope(run.name);
+			for(c=0; c<run.params; c++){
+				localScope[run.name].variables[run.params[c].name] = run.params[c];	
+			}
+			scope.push(run.name);
+			scopeP++;
+			for(z=0; z<localScope[run.name].commands.length; z++){
+				loadCode(z, localScope[run.name].commands[z]);
+			}
+			pointerLR++;
+			break;
+		case "lrm":
+			createScope(scope[scopeP]);
+			let math = localScope[scope[scopeP]].runs.math[pointerLIN];
+			if(!localScope[scope[scopeP]].variables[math.set] || !localScope[scope[scopeP]].variables[math.setting] || !operators[math.op]){
+				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
+			}
+			let x = parseInt(localScope[scope[scopeP]].variables[math.set].value);
+			let y = parseInt(localScope[scope[scopeP]].variables[math.setinng].value);
+			if(isNaN(x) || isNaN(y)) error(`Syntax error. You cannot do math on strings.`);
+			let z = 0;
+			switch(math.op){
+				case "+":
+					z = x + y;
+					break;
+				case "-":
+					z = x - y;
+					break;
+				case "*":
+					z = x * y;
+					break;
+				case "/":
+					z = x / y;
+					break;
+				case "%":
+					z = x % y;
+					break;
+				case "^":
+					let s = x;
+					for(let c=0; c<y; c++){
+						x = x * s;	
+					}
+					z = x;
+					break;
+				default:
+					error(`Syntax error. Unknown operator.`, ln, 1);
+					break;
+			}
+			x = toString(x);
+			localScope[scope[scopeP]].variables[math.set].value = x;
+			pointerLRM++;
+			break;
+		case "gi":
+			pointerGI++;
+			break;
+		case "li":
+			pointerLI++;
+			break;
+		case "gin":
+			let init = globalScope.ints[pointerGIN];
+			if(globalScope.variables[init.name]){
+				error(`Syntax error. ${init.name} has already been defined.`);	
+			}
+			createVar(init.name, init.value, init.tag, scope[scopeP]);
+			pointerGIN++;
+			break;
+		case "lin":
+			createScope(scope[scopeP]);
+			let init = localScope[scope[scopeP]].ints[pointerLIN];
+			if(localScope[scope[scopeP]].variables[init.name]){
+				error(`Syntax error. ${init.name} has already been defined.`);	
+			}
+			createVar(init.name, init.value, init.tag, scope[scopeP]);
+			pointerLIN++;
+			break;
+		case "e":
+			delete scope[scopeP]
+			scopeP--;
+			break;
+		default:
+			error(`Unkown parsing command. Got ${commands[i]}.`, i, 1);
+			break;
+	}
+}
+
+function runI(tempRun){
+	switch(tempRun.name){
+		case "print.cons":
+			break;
 	}
 }
