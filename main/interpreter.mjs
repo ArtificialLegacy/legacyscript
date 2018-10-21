@@ -394,6 +394,8 @@ function loadCode(i, s){
 			break;
 		case "grm":
 			math = globalScope.runs.math[pointerGIN];
+			console.log(math);
+			console.dir(globalScope.runs.math);
 			if(!globalScope.variables[math.set] || !globalScope.variables[math.setting] || !operators[math.op]){
 				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
 			}
@@ -521,8 +523,6 @@ function loadCode(i, s){
 			break;
 		case "gin":
 			init = globalScope.inits[pointerGIN];
-			console.log(pointerGIN);
-			console.dir(globalScope.inits[0]);
 			if(globalScope.variables[init.name]){
 				error(`Syntax error. ${init.name} has already been defined.`);	
 			}
