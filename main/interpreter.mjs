@@ -135,7 +135,7 @@ function interpret(tempFile, tempR, tempC){
   }
 }
 
-createVar("pi", "3.1415926535897545", "g", "global");
+createVar("pi", "3.1415926535897545", "p", "global");
 
 function createVar(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
