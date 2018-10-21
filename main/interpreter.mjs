@@ -810,3 +810,6 @@ function runI(tempRun){
 			break;
 	}
 }
+
+console.log("Running code...");
+runCode();
