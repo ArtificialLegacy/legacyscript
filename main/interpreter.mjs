@@ -394,8 +394,7 @@ function loadCode(i, s){
 			break;
 		case "grm":
 			math = globalScope.runs.math[pointerGIN];
-			console.log(math);
-			console.dir(globalScope.runs.math);
+			console.dir(globalScope.runs.math.Ex);
 			if(!globalScope.variables[math.set] || !globalScope.variables[math.setting] || !operators[math.op]){
 				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
 			}
