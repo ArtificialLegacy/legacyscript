@@ -14,12 +14,75 @@ import syntax from './index/methods.mjs';
 
 var ln = 0;
 
+class Var {
+  constructor(tempName, tempValue, tempScope, tempType){
+    this.name = tempName;
+    this.value = tempValue;
+    this.scope = tempScope;
+    this.type = tempType;
+  }
+}
+
+class Method {
+  constructor(tempName, tempState, tempTag="d"){
+    this.name = tempName;
+    this.state = tempState;
+    this.tag = tempTag;
+  }
+}
+
+class Run {
+  constructor(tempName, tempParams, tempTag, tempType){
+    this.name = tempName;
+    this.params = tempParams;
+    this.tag = tempTag;
+    this.type = tempType;
+  }
+}
+
+class Ex {
+  constructor(tempSet, tempOp, tempSetter){
+    this.set = tempSet;
+    this.op = tempOp;
+    this.setter = tempSetter;
+  }
+}
+
+class If {
+  constructor(tempVar, tempOp, tempComp){
+    this.var = tempVar;
+    this.op = tempOp;
+    this.comp = tempComp;
+  }
+}
+
 var scope = [
   "global",
 ];
 var scopeP = 0;
 
 var open = 0;
+
+let globalScope = {
+  "methods": {
+    
+  },
+  "variables": {
+    
+  },
+  "runs": {
+    "math": [
+      
+    ],
+  },
+  "ifs": {
+    
+  }
+};
+
+let localScope = {
+  
+};
 
 for(let i = 0; i < file.length; i++) {
   ln = i;
@@ -28,7 +91,7 @@ for(let i = 0; i < file.length; i++) {
   for(let r = 0; r < 100; r++){
     check = check + fileStrings[r];
     for(let c in syntax){
-      if(check == c){
+      if(check == `{${c}`){
         interpret(fileStrings, r, c);
         break;
       }
@@ -72,35 +135,7 @@ function interpret(tempFile, tempR, tempC){
   }
 }
 
-let globalScope = {
-  "methods": {
-    
-  },
-  "variables": {
-    
-  },
-  "runs": {
-    "math": {
-      
-    },
-  },
-  "ifs": {
-    
-  }
-};
-
-let localScope = {
-  
-};
-
-class Var {
-  constructor(tempName, tempValue, tempScope, tempType){
-    this.name = tempName;
-    this.value = tempValue;
-    this.scope = tempScope;
-    this.type = tempType;
-  }
-}
+createVar("pi", "3.1415926535897545", "g", "global");
 
 function createVar(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
@@ -110,6 +145,8 @@ function createVar(tempName, tempValue, tempTag, tempScope){
      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
   } else if(tempTag == "l"){
     if(tempScope !== "global"){
+	  if(!localScope[tempScope]) localScope[tempScope] = {};
+	  if(!localScope[tempScope].variables) localScope[tempScope].variables = {};
       if(localScope[tempScope].variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
@@ -142,14 +179,6 @@ function createVar(tempName, tempValue, tempTag, tempScope){
   }
 }
 
-class Method {
-  constructor(tempName, tempState, tempTag="d"){
-    this.name = tempName;
-    this.state = tempState;
-    this.tag = tempTag;
-  }
-}
-
 createMethod("print.cons", "s", "i");
 createMethod("print.clear", "s", "i");
 createMethod("print.info", "s", "i");
@@ -179,38 +208,28 @@ function createMethod(tempName, tempState, tempTag){
   globalScope.methods[tempName] = new Method(tempName, tempState, tempTag);
 }
 
-class Run {
-  constructor(tempName, tempParams, tempTag, tempType){
-    this.name = tempName;
-    this.params = tempParams;
-    this.tag = tempTag;
-    this.type = tempType;
-  }
-}
-
 function createRun(tempName, tempParams, tempTag, tempType, tempScope){
   let params = tempParams.split("(");
   params[1] = params[1].split(")");
   params = params[1][0].split(",");
   if(tempScope == "global"){
+  if(!globalScope.runs[tempName]) globalScope.runs[tempName] = [];
     globalScope.runs[tempName].push(new Run(tempName, params, tempTag, tempType));
   } else {
+	if(!localScope[tempScope]) localScope[tempScope] = {};
+	if(!localScope[tempScope].runs) localScope[tempScope].runs = {};
+	if(!localScope[tempScope].runs[tempName]) localScope[tempScope].runs[tempName] = [];
     localScope[tempScope].runs[tempName].push(new Run(tempName, params, tempTag, tempType));
   }
 }
 
-class Ex {
-  constructor(tempSet, tempOp, tempSetter){
-    this.set = tempSet;
-    this.op = tempOp;
-    this.setter = tempSetter;
-  }
-}
-
 function createMath(tempSet, tempOp, tempSetting, tempScope){
-  if(tempScope == global){
+  if(tempScope == "global"){
     globalScope.runs.math.push(new Ex(tempSet, tempOp, tempSetting));
   } else {
+	if(!localScope[tempScope]) localScope[tempScope] = {};
+	if(!localScope[tempScope].runs) localScope[tempScope].runs = {};
+	if(!localScope[tempScope].runs.math) localScope[tempScope].runs.math = [];
     localScope[tempScope].runs.math.push(new Ex(tempSet, tempOp, tempSetting));
   }
 }
@@ -224,18 +243,10 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
   if(open < 0){
    error("Syntax error. Unexpected end statement.", ln, 1);
   }
-  for(i=0; i<param; i++){
+  for(let i=0; i<param; i++){
     delete scope[scopeP];
   }
    scopeP--;
-}
-
-class If {
-  constructor(tempVar, tempOp, tempComp){
-    this.var = tempVar;
-    this.op = tempOp;
-    this.comp = tempComp;
-  }
 }
 
 function createIf(tempVar, tempOp, tempComp, tempScope){
@@ -249,3 +260,5 @@ function createIf(tempVar, tempOp, tempComp, tempScope){
 function error(tempError, tempLn, tempCol){
   throw(`Error detected! ${tempError} at Ln.${tempLn+1} Col.${tempCol}`);
 }
+
+console.log("Interpretted Code.");
