@@ -37,12 +37,11 @@ class Var {
 }
 
 class Init {
-  constructor(tempName, tempValue, tempTag, tempScope, tempType){
+  constructor(tempName, tempValue, tempTag, tempScope){
     this.name = tempName;
     this.value = tempValue;
     this.tag = tempTag;
     this.scope = tempScope;
-    this.type = tempType;
   }
 }
 
@@ -141,8 +140,10 @@ function interpret(tempFile, tempR, tempC){
   switch(tempC){
     case "init":
       if(scope[scopeP] == "global"){
+	  createInit(compile[0], compile[1], compile[2], scope[scopeP]);
 	globalScope.commands.push("gin");      
       } else {
+	  createInit(compile[0], compile[1], compile[2], scope[scopeP]);
 	createScope(scope[scopeP]);
 	localScope[scope[scopeP]].commands.push("lin");      
       }
@@ -200,11 +201,11 @@ function createScope(tempName){
 	if(!localScope[tempName].commands) localScope[tempName].commands = [];
 }
 
-createVar("pi", "3.1415926535897454", "constant", "global");
-createVar("undefined", "undefined", "constant", "global");
-createVar("null", "null", "constant", "global");
-createVar("true", "true", "constant", "global");
-createVar("false", "false", "constant", "global");
+createVar("pi", "3.1415926535897454", "p", "constant", "global");
+createVar("undefined", "undefined", "p", "constant", "global");
+createVar("null", "null", "p", "constant", "global");
+createVar("true", "true", "p", "constant", "global");
+createVar("false", "false", "p", "constant", "global");
 
 function createInit(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
@@ -269,7 +270,7 @@ function createVar(tempName, tempValue, tempTag, tempScope){
     }
     globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
   } else {
-    error(`Syntax error. Invalid or missing tag. Got '${tempTag}'`,  ln, 6);
+    error(`Syntax error. Invalid or missing tag. Got '${tempTag}, (${tempName})'`,  ln, 6);
   }
 }
 
