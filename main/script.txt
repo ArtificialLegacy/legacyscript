@@ -6,7 +6,7 @@ STATE = a (async), s (sync)
 TAG = d (default), i (internal)
 
 run METHOD_NAME : (PARAMETERS) : TAG ;
-TAG = d (default)
+TAG = d (default) r (return)
 
 math VARIABLE_NAME : OPERATOR : VARIABLE_NAME ;
 
