@@ -370,7 +370,7 @@ function loadCode(i, s){
 	switch(s){
 		case "gr":
 			console.log(run);
-			//let run = globalScope.runs.normal[pointerGR];
+			run = globalScope.runs.normal[pointerGR];
 			if(!globalScope.methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
 			}
@@ -391,7 +391,7 @@ function loadCode(i, s){
 			pointerGR++;
 			break;
 		case "grm":
-			let math = globalScope.runs.math[pointerGIN];
+			math = globalScope.runs.math[pointerGIN];
 			if(!globalScope.variables[math.set] || !globalScope.variables[math.setting] || !operators[math.op]){
 				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
 			}
@@ -434,7 +434,7 @@ function loadCode(i, s){
 			pointerGRM++;
 			break;
 		case "lr":
-			let run = localScope[scope[scopeP]].runs.normal[pointerLR];
+			run = localScope[scope[scopeP]].runs.normal[pointerLR];
 			if(!localScope[scope[scopeP]].methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
 			}
@@ -456,17 +456,17 @@ function loadCode(i, s){
 			break;
 		case "lrm":
 			createScope(scope[scopeP]);
-			let math = localScope[scope[scopeP]].runs.math[pointerLIN];
+			math = localScope[scope[scopeP]].runs.math[pointerLIN];
 			if(!localScope[scope[scopeP]].variables[math.set] || !localScope[scope[scopeP]].variables[math.setting] || !operators[math.op]){
 				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
 			}
-			let x = parseInt(localScope[scope[scopeP]].variables[math.set].value);
-			let y = parseInt(localScope[scope[scopeP]].variables[math.setinng].value);
+			x = parseInt(localScope[scope[scopeP]].variables[math.set].value);
+			y = parseInt(localScope[scope[scopeP]].variables[math.setinng].value);
 			if(isNaN(x) || isNaN(y)){
 				x = localScope[scope[scopeP]].variables[math.set].value;
 				y = localScope[scope[scopeP]].variables[math.setting].value;
 			}
-			let z;
+			z = 0;
 			if(typeof x == typeof "string" && typeof y == typeof "string"){
 				switch(math.op){
 					case "+":
