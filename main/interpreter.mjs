@@ -337,8 +337,8 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
 	  createScope(tempScope);
 	  localScope[tempScope].commands.push("e");
     	  delete scope[scopeP];
+	   scopeP--;
   }
-   scopeP -= param;
 }
 
 function createIf(tempVar, tempOp, tempComp, tempScope){
@@ -537,7 +537,7 @@ function loadCode(i, s){
 			pointerLIN++;
 			break;
 		case "e":
-			delete scope[scopeP]
+			delete scope[scopeP];
 			scopeP--;
 			break;
 		default:
