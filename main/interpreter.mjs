@@ -393,15 +393,27 @@ function loadCode(i, s){
 			pointerGR++;
 			break;
 		case "grm":
-			math = globalScope.runs.math[pointerGIN];
-			console.dir(globalScope.runs.math.Ex);
-			if(!globalScope.variables[math.set] || !globalScope.variables[math.setting] || !operators[math.op]){
+			math = globalScope.runs.math[pointerGRM];
+			if(!globalScope.variables[math.set] || !globalScope.variables[math.setter] || !operators[math.op]){
 				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
 			}
 			let x = parseInt(globalScope.variables[math.set].value);
-			let y = parseInt(globalScope.variables[math.setting].value);
+			let y = parseInt(globalScope.variables[math.setter].value);
 			if(isNaN(x) || isNaN(y)) error(`Syntax error. You cannot do math on strings.`);
 			let z = 0;
+			if(typeof x == typeof "string" && typeof y == typeof "string"){
+				switch(math.op){
+					case "+":
+						z = x + y;
+						break;
+					case "=":
+						z = y;
+						break;
+					default:
+						error(`Syntax error. Invalid operator.`, ln, 3);
+						break;
+				}
+			}
 			switch(math.op){
 				case "+":
 					z = x + y;
@@ -459,15 +471,15 @@ function loadCode(i, s){
 			break;
 		case "lrm":
 			createScope(scope[scopeP]);
-			math = localScope[scope[scopeP]].runs.math[pointerLIN];
-			if(!localScope[scope[scopeP]].variables[math.set] || !localScope[scope[scopeP]].variables[math.setting] || !operators[math.op]){
+			math = localScope[scope[scopeP]].runs.math[pointerLRM];
+			if(!localScope[scope[scopeP]].variables[math.set] || !localScope[scope[scopeP]].variables[math.setter] || !operators[math.op]){
 				error(`Syntax error. Missing or invalid arguments.`, ln, 1);
 			}
 			x = parseInt(localScope[scope[scopeP]].variables[math.set].value);
-			y = parseInt(localScope[scope[scopeP]].variables[math.setinng].value);
+			y = parseInt(localScope[scope[scopeP]].variables[math.setter].value);
 			if(isNaN(x) || isNaN(y)){
 				x = localScope[scope[scopeP]].variables[math.set].value;
-				y = localScope[scope[scopeP]].variables[math.setting].value;
+				y = localScope[scope[scopeP]].variables[math.setter].value;
 			}
 			z = 0;
 			if(typeof x == typeof "string" && typeof y == typeof "string"){
