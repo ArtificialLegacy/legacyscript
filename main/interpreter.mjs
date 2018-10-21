@@ -332,6 +332,7 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
    error("Syntax error. Unexpected end statement.", ln, 1);
   }
   for(let i=0; i<param; i++){
+	  createScope(tempScope);
 	  localScope[tempScope].commands.push("e");
     	  delete scope[scopeP];
   }
