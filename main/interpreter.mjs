@@ -170,7 +170,7 @@ createMethod("index.map", "s", "i");
 createMethod("set.random", "s", "i");
 createMethod("set.min", "s", "i");
 createMethod("set.max", "s", "i");
-createMethod("set.sqr", "s"-, "i");
+createMethod("set.sqr", "s", "i");
 
 function createMethod(tempName, tempState, tempTag){
   if(globalScope.methods[tempName] || tempName == "math"){
