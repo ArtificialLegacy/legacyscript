@@ -27,18 +27,20 @@ var pointerGIN = 0;
 var pointerLIN = 0;
 
 class Var {
-  constructor(tempName, tempValue, tempScope, tempType){
+  constructor(tempName, tempValue, tempTag, tempScope, tempType){
     this.name = tempName;
     this.value = tempValue;
+    this.tag = tempTag;	
     this.scope = tempScope;
     this.type = tempType;
   }
 }
 
 class Init {
-  constructor(tempName, tempValue, tempScope, tempType){
+  constructor(tempName, tempValue, tempTag, tempScope, tempType){
     this.name = tempName;
     this.value = tempValue;
+    this.tag = tempTag;
     this.scope = tempScope;
     this.type = tempType;
   }
@@ -209,28 +211,27 @@ function createInit(tempName, tempValue, tempTag, tempScope){
      if(globalScope.inits[tempName]){
 	error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);     
      }
-     globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "normal");
+     globalScope.inits[tempName] = new Init(tempName, tempValue, "g", "global", "normal");
   } else if(tempTag == "l"){
      if(tempScope !== "global"){
 	 createScope(tempScope);
-         localScope[tempScope].inits.push(new Init(tempName, tempValue, "local", "normal"));
+         localScope[tempScope].inits.push(new Init(tempName, tempValue, "l", "local", "normal"));
      } else {
-         globalScope.inits.push(new Init(tempName, tempValue, "global", "normal"));
+         globalScope.inits.push(new Init(tempName, tempValue, "g", "global", "normal"));
      }
     } else if(tempTag == "c"){
          if(tempScope !== "global"){
             createScope();
-            localScope[tempScope].inits.push(new Init(tempName, tempValue, "local", "constant"));
+            localScope[tempScope].inits.push(new Init(tempName, tempValue, "c", "local", "constant"));
          } else {
-            globalScope.inits.push(new Init(tempName, tempValue, "global", "constant"));
+            globalScope.inits.push(new Init(tempName, tempValue, "p", "global", "constant"));
          }
      } else if(tempTag == "p"){
-        globalScope.inits.push(new Init(tempName, tempValue, "global", "constant"));
+        globalScope.inits.push(new Init(tempName, tempValue, "p", "global", "constant"));
      }
  }
 
 function createVar(tempName, tempValue, tempTag, tempScope){
-console.log("test");
   if(tempTag == "g"){
     if(globalScope.variables[tempName]){
       error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
