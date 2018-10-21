@@ -558,7 +558,7 @@ function runI(tempRun){
 			console.warn(tempRun.params[0]);
 			break;
 		case "print.error":
-			console.error()tempRun.params[0];
+			console.error(tempRun.params[0]);
 			break;
 		case "print.count":
 			console.count();
