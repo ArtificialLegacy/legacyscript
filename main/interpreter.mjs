@@ -27,6 +27,15 @@ class Var {
   }
 }
 
+class Init {
+  constructor(tempName, tempValue, tempScope, tempType){
+    this.name = tempName;
+    this.value = tempValue;
+    this.scope = tempScope;
+    this.type = tempType;
+  }
+}
+
 class Method {
   constructor(tempName, tempState, tempTag="d"){
     this.name = tempName;
@@ -112,7 +121,7 @@ function interpret(tempFile, tempR, tempC){
   compile[0] = compile[0].substring(1);
   switch(tempC){
     case "init":
-      createVar(compile[1], compile[2], compile[3], scope[scopeP]);
+      createInit(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "method":
       open++;
@@ -156,12 +165,89 @@ function interpret(tempFile, tempR, tempC){
 
 createVar("pi", "3.1415926535897545", "p", "global");
 
+function createInit(tempName, tempValue, tempTag, tempScope){
+  if(tempTag == "g"){
+     if(globalScope.inits[tempName]){
+	error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);     
+     }
+     globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "normal");
+  } else if(tempTag == "l"){
+     if(tempScope !== "global"){
+	 if(!localScope[tempScope]) localScope[tempScope] = {};
+	 if(!localScope[tempScope].inits) localScope[tempScope].inits = {};
+	 if(localScope[tempScope.inits[tempName]){
+	    error(`Syntax  error. ${tempName} already has a declaration.` ln, 1);
+         }
+         localScope[tempScope].inits[tempName] = new Init(tempName, tempValue, "local", "normal");
+     } else {
+         if(globalScope.inits[tempName]){
+	    error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
+	 }
+         globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "normal");
+     }
+    } else if(tempTag == "c"){
+         if(tempScope !== "global"){
+            if(!localScope[tempScope]) localScope[tempScope] = {};
+            if(!localScope[tempScope].inits) localScope[tempScope].inits = {};
+            if(localScope[tempScope].inits[tempName]){
+               error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
+            }
+            localScope[tempScope].inits[tempName] = new Init(tempName, tempValue, "local", "constant");
+         } else {
+            if(globalScope.inits[tempName]){
+               error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
+            }
+            globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "constant");
+         }
+     } else if(tempTag == "p"){
+        if(globalScope.inits[tempName]){
+           error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);
+        }
+        globalScope.inits[tempName] = new Init(tempName, tempValue, "global", "constant");
+     }
+  }
+}
+
 function createVar(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
     if(globalScope.variables[tempName]){
       error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
     }
      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
+  } else if(tempTag == "l"){
+    if(tempScope !== "global"){
+	  if(!localScope[tempScope]) localScope[tempScope] = {};
+	  if(!localScope[tempScope].variables) localScope[tempScope].variables = {};
+      if(localScope[tempScope].variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "normal");
+    } else {
+      if(globalScope.variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
+    }
+  } else if(tempTag == "c"){
+    if(tempScope !== "global"){
+      if(localScope[tempScope].variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "constant");
+    } else {
+      if(globalScope.variables[tempName]){
+        error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+      }
+      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
+    }
+  } else if(tempTag == "p"){
+    if(globalScope.variables[tempName]){
+      error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
+    }
+    globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
+  } else {
+    error(`Syntax error. Invalid or missing tag. Got '${tempTag}'`,  ln, 6);
+  }     globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
   } else if(tempTag == "l"){
     if(tempScope !== "global"){
 	  if(!localScope[tempScope]) localScope[tempScope] = {};
