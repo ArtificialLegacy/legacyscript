@@ -184,7 +184,7 @@ function interpret(tempFile, tempR, tempC){
       createIf(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "end":
-      createEnd(compile[1], compile[2], compile[3]);
+      createEnd(compile[1], compile[2], compile[3], scope[scopeP]);
       break
     default:
       error("Syntax error. Unknown statement.", ln, 1);
@@ -334,7 +334,6 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
    error("Syntax error. Unexpected end statement.", ln, 1);
   }
   for(let i=0; i<param; i++){
-	  console.log(tempScope);
 	  createScope(tempScope);
 	  localScope[tempScope].commands.push("e");
     	  delete scope[scopeP];
@@ -816,6 +815,6 @@ function runI(tempRun){
 }
 
 console.log("Running code...");
-//runCode();
 console.dir(globalScope);
 console.dir(localScope);
+runCode();
