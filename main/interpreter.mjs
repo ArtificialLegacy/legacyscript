@@ -227,8 +227,7 @@ function createInit(tempName, tempValue, tempTag, tempScope){
      } else if(tempTag == "p"){
         globalScope.inits.push(new Init(tempName, tempValue, "global", "constant"));
      }
-  }
-}
+ }
 
 function createVar(tempName, tempValue, tempTag, tempScope){
 console.log("test");
