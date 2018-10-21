@@ -2,7 +2,7 @@ init exampleVar : "example" : g ;
 
 run construct.list : (exampleVar2) : d ;
 run index.list : (exampleVar2,0,"test") : d ;
-run index.list : (exampleVar2,0,return)
+run index.list : (exampleVar2,0,return) : r ;
 run print.cons : (return) : d ;
 
 run edit.del : (exampleVar2) : d ;
