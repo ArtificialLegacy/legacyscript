@@ -734,7 +734,7 @@ function runI(tempRun){
 					if(!globalScope.variables[tempRun.params[0]]){
 						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
 					}
-					globalScope.variables[tempRun.params[0][tempRun.params[1]] = localScope[scope[scopeP]][tempRun.params[2]];
+					globalScope.variables[tempRun.params[0]][tempRun.params[1]] = localScope[scope[scopeP]][tempRun.params[2]];
 				}
 			} else {
 				if(tempRun.tag = "r"){
@@ -747,7 +747,7 @@ function runI(tempRun){
 					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
 						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
 					}
-					localScope[scope[scopeP]].variables[tempRun.params[0][tempRun.params[1]] = localScope[scope[scopeP]].variables[tempRun.params[2]];
+					localScope[scope[scopeP]].variables[tempRun.params[0]][tempRun.params[1]] = localScope[scope[scopeP]].variables[tempRun.params[2]];
 				}
 			}
 			break;
