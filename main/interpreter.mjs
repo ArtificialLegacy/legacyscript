@@ -121,6 +121,11 @@ function interpret(tempFile, tempR, tempC){
   compile[0] = compile[0].substring(1);
   switch(tempC){
     case "init":
+      if(scope[scopeP] == "global"){
+	commands.push("gin");      
+      } else {
+	commands.push("lin");      
+      }
       createInit(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "method":
