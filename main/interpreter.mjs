@@ -815,4 +815,6 @@ function runI(tempRun){
 }
 
 console.log("Running code...");
-runCode();
+//runCode();
+console.dir(globalScope);
+console.dir(localScope);
