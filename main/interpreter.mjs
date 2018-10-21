@@ -14,6 +14,10 @@ import syntax from './index/methods.mjs';
 
 var ln = 0;
 
+var thread = 0;
+
+var commands = [];
+
 class Var {
   constructor(tempName, tempValue, tempScope, tempType){
     this.name = tempName;
@@ -117,12 +121,27 @@ function interpret(tempFile, tempR, tempC){
       scope[scopeP] = (compile[1]);
       break;
     case "run":
+      if(scope[scopeP] == "global"){
+	 commands.push("gr");     
+      } else {
+	 commands.push("lr");
+      }
       createRun(compile[1], compile[2], compile[3], "run", scope[scopeP]);
       break;
     case "math":
+      if(scope[scopeP] == "global"){
+	 commands.push("grm");
+      } else {
+	 commands.push("lrm");
+      }
       createMath(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
     case "if":
+      if(scope[scopeP] == "global"){
+	  commands.push("gi");    
+      } else {
+	  commands.push("li");    
+      }
       open++;
       createIf(compile[1], compile[2], compile[3], scope[scopeP]);
       break;
@@ -250,6 +269,8 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
 }
 
 function createIf(tempVar, tempOp, tempComp, tempScope){
+  scopeP++;
+  scope[scopeP] = thread;	
   if(tempScope == "global"){
     globalScope.ifs.push(new If(tempVar, tempOp, tempComp));
   } else {
