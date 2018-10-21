@@ -369,7 +369,8 @@ function runCode(){
 function loadCode(i, s){
 	switch(s){
 		case "gr":
-			let run = globalScope.runs.normal[pointerGR];
+			console.log(run);
+			//let run = globalScope.runs.normal[pointerGR];
 			if(!globalScope.methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
 			}
