@@ -27,7 +27,7 @@ TAG = d (default)
 
 index.TAG (PARAMETERS) : TAG ;
 TAG = list, map
-PARAMETERS = [0] (KEY) [1]* (VALUE)
+PARAMETERS = [0] (KEY) [1]* (VALUE) [2]* (RETURN)
 TAG = d (default)
 
 set.TAG (PARAMETERS) : TAG ;
