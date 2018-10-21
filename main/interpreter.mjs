@@ -365,11 +365,13 @@ function runCode(){
 		loadCode(i, globalScope.commands[i]);
 	}
 }
+let run;
+let math;
+let init;
 
 function loadCode(i, s){
 	switch(s){
 		case "gr":
-			console.log(run);
 			run = globalScope.runs.normal[pointerGR];
 			if(!globalScope.methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
