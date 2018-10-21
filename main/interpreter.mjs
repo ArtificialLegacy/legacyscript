@@ -150,27 +150,27 @@ class Method {
   }
 }
 
-createMethod("print.cons", s, "i");
-createMethod("print.clear", s, "i");
-createMethod("print.info", s, "i");
-createMethod("print.warn", s, "i");
-createMethod("print.count", s, "i");
-createMethod("print.stime", s, "i");
-createMethod("print.etime", s, "i");
-createMethod("edit.round", s, "i");
-createMethod("edit.floor", s, "i");
-createMethod("edit.ceil", s, "i");
-createMethod("edit.flip", s, "i");
-createMethod("edit.abs", s, "i");
-createMethod("edit.del", s, "i");
-createMethod("construct.list", s, "i");
-createMethod("construct.map", s, "i");
-createMethod("index.list", s, "i");
-createMethod("index.map", s, "i");
-createMethod("set.random", s, "i");
-createMethod("set.min", s, "i");
-createMethod("set.max", s, "i");
-createMethod("set.sqr", s, "i");
+createMethod("print.cons", "s", "i");
+createMethod("print.clear", "s", "i");
+createMethod("print.info", "s", "i");
+createMethod("print.warn", "s", "i");
+createMethod("print.count", "s", "i");
+createMethod("print.stime", "s", "i");
+createMethod("print.etime", "s", "i");
+createMethod("edit.round", "s", "i");
+createMethod("edit.floor", "s", "i");
+createMethod("edit.ceil", "s", "i");
+createMethod("edit.flip", "s", "i");
+createMethod("edit.abs", "s", "i");
+createMethod("edit.del", "s", "i");
+createMethod("construct.list", "s", "i");
+createMethod("construct.map", "s", "i");
+createMethod("index.list", "s", "i");
+createMethod("index.map", "s", "i");
+createMethod("set.random", "s", "i");
+createMethod("set.min", "s", "i");
+createMethod("set.max", "s", "i");
+createMethod("set.sqr", "s"-, "i");
 
 function createMethod(tempName, tempState, tempTag){
   if(globalScope.methods[tempName] || tempName == "math"){
