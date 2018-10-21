@@ -237,19 +237,19 @@ function createVar(tempName, tempValue, tempTag, tempScope){
     if(globalScope.variables[tempName]){
       error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
     }
-     globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
+     globalScope.variables[tempName] = new Var(tempName, tempValue, tempTag, "global", "normal");
   } else if(tempTag == "l"){
     if(tempScope !== "global"){
       createScope(tempScope);
       if(localScope[tempScope].variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
-      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "normal");
+      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, tempTag, "local", "normal");
     } else {
       if(globalScope.variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
-      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "normal");
+      globalScope.variables[tempName] = new Var(tempName, tempValue, tempTag, "global", "normal");
     }
   } else if(tempTag == "c"){
     if(tempScope !== "global"){
@@ -257,18 +257,18 @@ function createVar(tempName, tempValue, tempTag, tempScope){
       if(localScope[tempScope].variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
-      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, "local", "constant");
+      localScope[tempScope].variables[tempName] = new Var(tempName, tempValue, tempTag, "local", "constant");
     } else {
       if(globalScope.variables[tempName]){
         error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
       }
-      globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
+      globalScope.variables[tempName] = new Var(tempName, tempValue, tempTag, "global", "constant");
     }
   } else if(tempTag == "p"){
     if(globalScope.variables[tempName]){
       error(`Syntax error. ${tempName} has already been defined.`, ln, 2);
     }
-    globalScope.variables[tempName] = new Var(tempName, tempValue, "global", "constant");
+    globalScope.variables[tempName] = new Var(tempName, tempValue, tempTag, "global", "constant");
   } else {
     error(`Syntax error. Invalid or missing tag. Got '${tempTag}, (${tempName})'`,  ln, 6);
   }
