@@ -28,7 +28,7 @@ TAG = d (default)
 index.TAG (PARAMETERS) : TAG ;
 TAG = list, map
 PARAMETERS = [0] (KEY) [1]* (VALUE) [2]* (RETURN)
-TAG = d (default)
+TAG = d (default) r (return)
 
 set.TAG (PARAMETERS) : TAG ;
 TAG = random, min, max, sqr
