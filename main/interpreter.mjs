@@ -212,7 +212,7 @@ function createInit(tempName, tempValue, tempTag, tempScope){
      if(globalScope.inits[tempName]){
 	error(`Syntax error. ${tempName} already has a declaration.`, ln, 1);     
      }
-     globalScope.inits[tempName] = new Init(tempName, tempValue, "g", "global", "normal");
+     globalScope.inits.push(new Init(tempName, tempValue, "g", "global", "normal"));
   } else if(tempTag == "l"){
      if(tempScope !== "global"){
 	 createScope(tempScope);
