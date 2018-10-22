@@ -1,26 +1,29 @@
 init exampleVar : example : g ;
 
 run construct.list : (exampleVar2) : d ;
+init test : test : g ;
 run index.list : (exampleVar2,0,test) : d ;
 run index.list : (exampleVar2,0,return) : r ;
 run print.cons : (return) : d ;
 
 run edit.del : (exampleVar2) : d ;
-run print.cons : (exampleVar2) : d ;
 
 method exampleMethod : s : d ;
-init exampleVar2 : localvar : l ;
-run print.cons : (temp1) : d ;
-run print.info : (exampleVar2) : d ;
+init exampleVar3 : localvar : l ;
+run print.info : (exampleVar3) : d ;
 end (1) : r : d ;
 
-run print.info : (exampleVar2) : d ;
+init exampleVar2 : test : g ;
+run print.cons : (exampleVar2) : d ;
 
-run set.random : (exampleVar2) : d ;
+run set.random : (exampleVar2,1,20) : d ;
+run print.cons : (exampleVar2) : d ;
 math exampleVar2 : * : exampleVar2 ;
 run print.cons : (exampleVar2) : d ;
 
 run exampleMethod : (exampleVar) : d ;
+
+run print.cons : (exampleVar) : d ;
 
 ~~ This is a comment :D ~~
 
