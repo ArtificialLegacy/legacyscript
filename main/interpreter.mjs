@@ -15,6 +15,9 @@ import operators from './index/operators.mjs';
 
 var ln = 0;
 
+let params;
+let param;
+
 var thread = 0;
 
 var pointerGR = 0;
@@ -201,11 +204,11 @@ function createScope(tempName){
 	if(!localScope[tempName].commands) localScope[tempName].commands = [];
 }
 
-createVar("pi", "3.1415926535897454", "p", "constant", "global");
-createVar("undefined", "undefined", "p", "constant", "global");
-createVar("null", "null", "p", "constant", "global");
-createVar("true", "true", "p", "constant", "global");
-createVar("false", "false", "p", "constant", "global");
+createVar("pi", "3.1415926535897454", "p", "global");
+createVar("undefined", "undefined", "p", "global");
+createVar("null", "null", "p", "global");
+createVar("true", "true", "p", "global");
+createVar("false", "false", "p", "global");
 
 function createInit(tempName, tempValue, tempTag, tempScope){
   if(tempTag == "g"){
@@ -304,7 +307,7 @@ function createMethod(tempName, tempState, tempTag){
 }
 
 function createRun(tempName, tempParams, tempTag, tempType, tempScope){
-  let params = tempParams.split("(");
+  params = tempParams.split("(");
   params[1] = params[1].split(")");
   params = params[1][0].split(",");
   if(tempScope == "global"){
@@ -325,7 +328,7 @@ function createMath(tempSet, tempOp, tempSetting, tempScope){
 }
 
 function createEnd(tempParams, tempState, tempTag, tempScope){
-  let param = tempParams.split("(");
+  param = tempParams.split("(");
   param = param[1].split(")");
   param = param[0];
   param = parseInt(param);
@@ -336,7 +339,7 @@ function createEnd(tempParams, tempState, tempTag, tempScope){
   for(let i=0; i<param; i++){
 	  createScope(tempScope);
 	  localScope[tempScope].commands.push("e");
-    	  delete scope[scopeP];
+		delete scope[scopeP];
 	   scopeP--;
   }
 }
@@ -368,16 +371,20 @@ function runCode(){
 let run;
 let math;
 let init;
+let se;
 
 function loadCode(i, s){
+	ln = i;
 	switch(s){
 		case "gr":
 			run = globalScope.runs.normal[pointerGR];
 			if(!globalScope.methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
 			}
-			if(run.tag == "i"){
+			se = globalScope.methods[run.name].tag;
+			if(se == "i"){
 				runI(run);
+				pointerGR++;
 				break;
 			}
 			createScope(run.name);
@@ -388,7 +395,9 @@ function loadCode(i, s){
 			scope.push(run.name);
 			scopeP++;
 			for(let z=0; z<localScope[run.name].commands.length; z++){
-				loadCode(z, localScope[run.name].commands[z]);
+			console.dir(localScope[run.name].commands);
+				loadCode(z+i, localScope[run.name].commands[z]);
+				console.dir(localScope[run.name]);
 			}
 			pointerGR++;
 			break;
@@ -399,9 +408,12 @@ function loadCode(i, s){
 			}
 			let x = parseInt(globalScope.variables[math.set].value);
 			let y = parseInt(globalScope.variables[math.setter].value);
-			if(isNaN(x) || isNaN(y)) error(`Syntax error. You cannot do math on strings.`);
+			if(isNaN(x) || isNaN(y)){
+				x = globalScope.variables[math.set].value;
+				y = globalScope.variables[math.setter].value;
+			}
 			let z = 0;
-			if(typeof x == typeof "string" && typeof y == typeof "string"){
+			if(typeof x == "string" && typeof y == "string"){
 				switch(math.op){
 					case "+":
 						z = x + y;
@@ -444,28 +456,30 @@ function loadCode(i, s){
 					error(`Syntax error. Unknown operator.`, ln, 1);
 					break;
 			}
-			z = toString(z);
+			z = z.toString();
 			globalScope.variables[math.set].value = z;
 			pointerGRM++;
 			break;
 		case "lr":
 			run = localScope[scope[scopeP]].runs.normal[pointerLR];
-			if(!localScope[scope[scopeP]].methods[run.name]){
+			if(!globalScope.methods[run.name]){
 				error(`Syntax error. ${run.name} is not defined.`);	
 			}
-			if(run.tag == "i"){
+			se = globalScope.methods[run.name].tag;
+			if(se == "i"){
 				runI(run);
+				pointerLR++;
 				break;
 			}
-			localScope[run.name].variables = globalScope.variables;
 			createScope(run.name);
-			for(c=0; c<run.params; c++){
+			localScope[run.name].variables = globalScope.variables;
+			for(let c=0; c<run.params; c++){
 				localScope[run.name].variables[run.params[c].name] = run.params[c];	
 			}
 			scope.push(run.name);
 			scopeP++;
-			for(z=0; z<localScope[run.name].commands.length; z++){
-				loadCode(z, localScope[run.name].commands[z]);
+			for(let z=0; z<localScope[run.name].commands.length; z++){
+				loadCode(z+i, localScope[run.name].commands[z]);
 			}
 			pointerLR++;
 			break;
@@ -550,6 +564,10 @@ function loadCode(i, s){
 			pointerLIN++;
 			break;
 		case "e":
+			pointerLI = 0;
+			pointerLIN = 0;
+			pointerLR = 0;
+			pointerLRM = 0;
 			delete scope[scopeP];
 			scopeP--;
 			break;
@@ -562,19 +580,39 @@ function loadCode(i, s){
 function runI(tempRun){
 	switch(tempRun.name){
 		case "print.cons":
-			console.log(tempRun.params[0]);
+			if(scope[scopeP] == "global"){
+				console.log(globalScope.variables[tempRun.params[0]].value);
+			} else {
+				createScope(scope[scopeP]);
+				console.log(localScope[scope[scopeP]].variables[tempRun.params[0]].value);
+			}
 			break;
 		case "print.clear":
 			console.clear();
 			break;
 		case "print.info":
-			console.info(tempRun.params[0]);
+			if(scope[scopeP] == "global"){
+				console.info(globalScope.variables[tempRun.params[0]].value);
+			} else {
+				createScope(scope[scopeP]);
+				console.info(localScope[scope[scopeP]].variables[tempRun.params[0]].value);
+			}
 			break;
 		case "print.warn":
-			console.warn(tempRun.params[0]);
+			if(scope[scopeP] == "global"){
+				console.warn(globalScope.variables[tempRun.params[0]].value);
+			} else {
+				createScope(scope[scopeP]);
+				console.warn(localScope[scope[scopeP]].variables[tempRun.params[0]].value);
+			}
 			break;
 		case "print.error":
-			console.error(tempRun.params[0]);
+			if(scope[scopeP] == "global"){
+				console.error(globalScope.variables[tempRun.params[0]].value);
+			} else {
+				createScope(scope[scopeP]);
+				console.error(localScope[scope[scopeP]].variables[tempRun.params[0]].value);
+			}
 			break;
 		case "print.count":
 			console.count();
@@ -713,23 +751,23 @@ function runI(tempRun){
 			break;
 		case "index.list":
 			if(scope[scopeP] == "global"){
-				if(tempRun.tag = "r"){
+				if(tempRun.tag == "r"){
 					if(!globalScope.variables[tempRun.params[0]]){
 						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
 					}
-					globalScope.variables[tempRun.params[2]] = globalScope.variables[tempRun.params[0]][parseInt(tempRun.params[1])];
+					createVar(tempRun.params[2], globalScope.variables[tempRun.params[0]][parseInt(tempRun.params[1])].value, "g", "global");
 				} else {
 					if(!globalScope.variables[tempRun.params[0]]){
 						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
 					}
-					globalScope.variables[tempRun.params[0]][parseInt(tempRun.params[1])] = localScope[scope[scopeP]][tempRun.params[2]];
+					globalScope.variables[tempRun.params[0]][parseInt(tempRun.params[1])] = globalScope.variables[tempRun.params[2]];
 				}
 			} else {
 				if(tempRun.tag = "r"){
 					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
 						error(`Syntax error. ${tempRun.params[0]} is not defined.`);	
 					}
-					localScope[scope[scopeP]].variables[tempRun.params[2]] = localScope[scope[scopeP]].variables[tempRun.params[0]][parseInt(tempRun.params[1])];
+					localScope[scopeP].variables[tempRun.params[2]] = createVar(tempRun.params[2], localScope[scopeP].variables[tempRun.params[0]][parseInt(tempRun.params[1])], "l", scope[scopeP]);
 					
 				} else {
 					if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
@@ -772,16 +810,16 @@ function runI(tempRun){
 				if(!globalScope.variables[tempRun.params[0]]){
 					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
 				}
-				globalScope.variables[tempRun.params[0]].value = Math.random();	
+				globalScope.variables[tempRun.params[0]].value = (Math.round(Math.random()*parseInt(tempRun.params[2]))+parseInt(tempRun.params[1])-1).toString()
 			} else {
 				if(!localScope[scope[scopeP]].variables[tempRun.params[0]]){
 					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
 				}
-				localScope[scope[scopeP]].variables[tempRun.params[0]].value = Math.random();	
+				localScope[scope[scopeP]].variables[tempRun.params[0]].value = (Math.round(Math.random()*parseInt(tempRun.params[2]))+parseInt(tempRun.params[1])-1).toString()	
 			}
 			break;
 		case "set.min":
-			let params = tempRun.params.unshift();
+			params = tempRun.params.unshift();
 			if(scope[scopeP] == "global"){
 				if(!globalScope.variables[tempRun.params[0]]){
 					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
@@ -795,7 +833,7 @@ function runI(tempRun){
 			}
 			break;
 		case "set.max":
-			let params = tempRun.params.unshift();
+			params = tempRun.params.unshift();
 			if(scope[scopeP] == "global"){
 				if(!globalScope.variables[tempRun.params[0]]){
 					error(`Syntax error. ${tempRun.params[0]} is not defined!`, ln, 3);	
@@ -828,6 +866,4 @@ function runI(tempRun){
 }
 
 console.log("Running code...");
-console.dir(globalScope);
-console.dir(localScope);
 runCode();
